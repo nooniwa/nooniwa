@@ -1,0 +1,25 @@
+{
+  "name": "nooniwa",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": [],
+  "license": "",
+  "author": "",
+  "exports": {
+    ".": "./index.ts",
+    "./schema": "./schema.ts",
+    "./loaders": "./loaders.ts",
+    "./routes/*": "./routes/*"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "astro": "^6.1.1"
+  },
+  "peerDependencies": {
+    "astro": "^6.0.0"
+  }
+}
