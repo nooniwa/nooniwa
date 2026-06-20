@@ -1,15 +1,22 @@
 import { visit } from "unist-util-visit";
-import type { Root, Text, Link, Parent, PhrasingContent } from "mdast";
+import type { Root, Text, Link, Image, Parent, PhrasingContent } from "mdast";
 import type { VFile } from "vfile";
 import type { AstroIntegrationLogger } from "astro";
 import type { ResolutionMap } from "../../utils/resolution-map";
-import { resolveWikilink } from "./resolve";
+import { resolveWikilink, resolveImage } from "./resolve";
 import { WIKILINK_REGEX } from "./wikilink";
-import { headingToAnchor, getSlugPath, slugToUrl } from "../../utils/slug";
+import { isImageFile, computeRelativeImagePath } from "./image";
+import {
+  headingToAnchor,
+  getContentRelativePath,
+  getSlugPath,
+  slugToUrl,
+} from "../../utils/slug";
 import { escapeHtml } from "./utils";
 
 export interface RemarkNooniwaOptions {
   pageUrlMap: ResolutionMap;
+  imageFileMap?: ResolutionMap;
   publishedSlugs?: ReadonlySet<string>;
   logger?: AstroIntegrationLogger;
 }
@@ -18,6 +25,8 @@ function processTextNode(
   text: string,
   pageUrlMap: ResolutionMap,
   currentSlugPath?: string,
+  imageFileMap?: ResolutionMap,
+  mdContentRelPath?: string,
   publishedSlugs?: ReadonlySet<string>,
   logger?: AstroIntegrationLogger,
 ): PhrasingContent[] {
@@ -29,13 +38,66 @@ function processTextNode(
   let match: RegExpExecArray | null;
   while ((match = WIKILINK_REGEX.exec(text)) !== null) {
     const [fullMatch, embedMarker, target = "", anchor, alias] = match;
+    const isEmbed = embedMarker === "!";
 
     if (match.index > lastIndex) {
       nodes.push({ type: "text", value: text.slice(lastIndex, match.index) });
     }
     lastIndex = match.index + fullMatch.length;
 
-    if (embedMarker === "!") {
+    if (isEmbed && isImageFile(target)) {
+      if (!imageFileMap) {
+        nodes.push({ type: "text", value: fullMatch });
+        continue;
+      }
+
+      const imageContentPath = resolveImage(
+        target,
+        imageFileMap,
+        currentSlugPath,
+      );
+      if (!imageContentPath) {
+        nodes.push({
+          type: "html",
+          value: `<div class="embed-error">Image not found: ${target}</div>`,
+        });
+        logger?.info(`Image not found: ${target}`);
+        continue;
+      }
+
+      const imageSrc = mdContentRelPath
+        ? computeRelativeImagePath(mdContentRelPath, imageContentPath)
+        : imageContentPath;
+
+      let width: string | undefined;
+      let height: string | undefined;
+      let alt = target.replace(/\.[^.]+$/, "");
+      if (alias) {
+        const sizeMatch = alias.match(/^(\d+)(?:x(\d+))?$/);
+        if (sizeMatch) {
+          width = sizeMatch[1];
+          height = sizeMatch[2];
+        } else {
+          alt = alias;
+        }
+      }
+
+      const imageNode: Image = {
+        type: "image",
+        url: imageSrc,
+        alt,
+        data: {
+          hProperties: {
+            ...(width && { width }),
+            ...(height && { height }),
+          },
+        },
+      };
+      nodes.push(imageNode);
+      continue;
+    }
+
+    if (isEmbed) {
       nodes.push({ type: "text", value: fullMatch });
       continue;
     }
@@ -96,10 +158,11 @@ function processTextNode(
 }
 
 export function remarkNooniwa(options: RemarkNooniwaOptions) {
-  const { pageUrlMap, publishedSlugs, logger } = options;
+  const { pageUrlMap, imageFileMap, publishedSlugs, logger } = options;
 
   return (tree: Root, file: VFile) => {
     const currentSlugPath = getSlugPath(file.path);
+    const mdContentRelPath = getContentRelativePath(file.path);
 
     visit(
       tree,
@@ -112,6 +175,8 @@ export function remarkNooniwa(options: RemarkNooniwaOptions) {
           node.value,
           pageUrlMap,
           currentSlugPath,
+          imageFileMap,
+          mdContentRelPath,
           publishedSlugs,
           logger,
         );
