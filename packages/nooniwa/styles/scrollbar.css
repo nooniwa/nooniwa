@@ -1,0 +1,17 @@
+@utility scrollbar-nooniwa {
+  scrollbar-color: color-mix(
+      in oklab,
+      var(--color-foreground-muted) 60%,
+      transparent
+    )
+    transparent;
+
+  &::-webkit-scrollbar-track {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: transparent !important;
+  }
+}

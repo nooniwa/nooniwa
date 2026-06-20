@@ -1,0 +1,133 @@
+/* scales */
+@theme {
+  --color-gray-50: var(--color-zinc-50);
+  --color-gray-100: var(--color-zinc-100);
+  --color-gray-200: var(--color-zinc-200);
+  --color-gray-300: var(--color-zinc-300);
+  --color-gray-400: var(--color-zinc-400);
+  --color-gray-500: var(--color-zinc-500);
+  --color-gray-600: var(--color-zinc-600);
+  --color-gray-700: var(--color-zinc-700);
+  --color-gray-800: var(--color-zinc-800);
+  --color-gray-900: var(--color-zinc-900);
+  --color-gray-950: var(--color-zinc-950);
+
+  --color-accent-50: var(--color-indigo-50);
+  --color-accent-100: var(--color-indigo-100);
+  --color-accent-200: var(--color-indigo-200);
+  --color-accent-300: var(--color-indigo-300);
+  --color-accent-400: var(--color-indigo-400);
+  --color-accent-500: var(--color-indigo-500);
+  --color-accent-600: var(--color-indigo-600);
+  --color-accent-700: var(--color-indigo-700);
+  --color-accent-800: var(--color-indigo-800);
+  --color-accent-900: var(--color-indigo-900);
+  --color-accent-950: var(--color-indigo-950);
+
+  --font-sans:
+    ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+}
+
+/* semantic tokens */
+@theme static {
+  --color-background: var(--color-gray-50);
+  --color-background-muted: var(--color-gray-100);
+  --color-foreground: var(--color-gray-800);
+  --color-foreground-strong: var(--color-gray-900);
+  --color-foreground-muted: var(--color-gray-500);
+  --color-border: var(--color-gray-200);
+
+  --color-accent: var(--color-accent-600);
+  --color-accent-hover: var(--color-accent-900);
+  --color-accent-muted: --alpha(var(--color-accent) / 70%);
+
+  --color-highlight: var(--color-amber-200);
+
+  --color-success: var(--color-emerald-500);
+  --color-error: var(--color-red-500);
+
+  --color-graph-node: var(--color-gray-600);
+  --color-graph-node-hover: var(--color-accent);
+  --color-graph-link: var(--color-gray-300);
+  --color-graph-link-hover: var(--color-accent);
+  --color-graph-text: var(--color-gray-600);
+  --color-graph-text-hover: var(--color-gray-800);
+
+  --color-callout-note: var(--color-blue-600);
+  --color-callout-abstract: var(--color-cyan-600);
+  --color-callout-info: var(--color-blue-600);
+  --color-callout-todo: var(--color-blue-600);
+  --color-callout-tip: var(--color-cyan-600);
+  --color-callout-success: var(--color-emerald-600);
+  --color-callout-question: var(--color-orange-600);
+  --color-callout-warning: var(--color-orange-600);
+  --color-callout-failure: var(--color-red-600);
+  --color-callout-danger: var(--color-red-600);
+  --color-callout-bug: var(--color-red-600);
+  --color-callout-example: var(--color-violet-600);
+  --color-callout-quote: var(--color-gray-500);
+}
+
+.dark {
+  --color-background: var(--color-gray-900);
+  --color-background-muted: var(--color-gray-800);
+  --color-foreground: var(--color-gray-200);
+  --color-foreground-strong: var(--color-gray-50);
+  --color-foreground-muted: var(--color-gray-400);
+  --color-border: var(--color-gray-700);
+
+  --color-accent: var(--color-accent-400);
+  --color-accent-hover: var(--color-accent-200);
+  --color-accent-muted: --alpha(var(--color-accent) / 70%);
+
+  --color-highlight: --alpha(var(--color-amber-300) / 40%);
+
+  --color-success: var(--color-emerald-400);
+  --color-error: var(--color-red-400);
+
+  --color-graph-node: var(--color-gray-400);
+  --color-graph-node-hover: var(--color-accent);
+  --color-graph-link: var(--color-gray-700);
+  --color-graph-link-hover: var(--color-accent);
+  --color-graph-text: var(--color-gray-400);
+  --color-graph-text-hover: var(--color-gray-100);
+
+  --color-callout-note: var(--color-blue-400);
+  --color-callout-abstract: var(--color-cyan-400);
+  --color-callout-info: var(--color-blue-400);
+  --color-callout-todo: var(--color-blue-400);
+  --color-callout-tip: var(--color-cyan-400);
+  --color-callout-success: var(--color-emerald-400);
+  --color-callout-question: var(--color-orange-400);
+  --color-callout-warning: var(--color-orange-400);
+  --color-callout-failure: var(--color-red-400);
+  --color-callout-danger: var(--color-red-400);
+  --color-callout-bug: var(--color-red-400);
+  --color-callout-example: var(--color-violet-400);
+  --color-callout-quote: var(--color-gray-400);
+}
+
+/* print media tokens */
+:root {
+  --color-print-background: var(--color-white);
+  --color-print-background-muted: var(--color-gray-100);
+  --color-print-foreground: var(--color-gray-800);
+  --color-print-foreground-strong: var(--color-gray-900);
+  --color-print-foreground-muted: var(--color-gray-500);
+  --color-print-border: var(--color-gray-200);
+  --color-print-highlight: var(--color-amber-200);
+  --color-print-accent: var(--color-accent-600);
+}
+
+/* color scheme */
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}

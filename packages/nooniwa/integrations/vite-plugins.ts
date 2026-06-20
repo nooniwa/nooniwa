@@ -21,6 +21,10 @@ interface PluginOptions {
 export function vitePluginUserConfig(options: PluginOptions): VitePlugin[] {
   const packagePath = fileURLToPath(new URL("..", import.meta.url));
 
+  const indexStylesPath = fileURLToPath(
+    new URL("../styles/index.css", import.meta.url),
+  );
+
   const { config, userStylesPath, componentPaths } = options;
 
   const modules = {
@@ -57,7 +61,11 @@ export function vitePluginUserConfig(options: PluginOptions): VitePlugin[] {
       load(id: string) {
         if (id !== userStylesPath) return;
         const userStyles = readFileSync(userStylesPath, "utf-8");
-        return [`@source "${packagePath}**/*.astro";`, userStyles].join("\n");
+        return [
+          `@source "${packagePath}**/*.astro";`,
+          `@import "${indexStylesPath}";`,
+          userStyles,
+        ].join("\n");
       },
     },
   ];
