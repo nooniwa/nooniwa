@@ -62,3 +62,4 @@ export type { NooniwaConfig, NooniwaUserConfig } from "./types";
 export type { BacklinkEntry } from "./utils/backlinks";
 export type { GraphNode, GraphLink, GraphData } from "./utils/graph";
 export type { TreeNode } from "./utils/folder-tree";
+export type { TagData, TagPageInfo } from "./utils/tag-data";

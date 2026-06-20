@@ -3,6 +3,7 @@ import {
   removeComments,
   removeCode,
   removeCommentsAndCode,
+  removeLinks,
 } from "../../utils/remove";
 
 describe("removeComments", () => {
@@ -55,5 +56,31 @@ describe("removeCommentsAndCode", () => {
     expect(out).not.toContain("hide");
     expect(out).not.toContain("code");
     expect(out).toContain("[[x]]");
+  });
+});
+
+describe("removeLinks (tag-data only)", () => {
+  test("a bare URL is removed whole (with its #fragment); nearby text stays", () => {
+    const out = removeLinks("see https://x.com/#section and #keep");
+    expect(out).not.toContain("#section");
+    expect(out).toContain("#keep");
+  });
+
+  test("an inline link [label](url) is removed whole, including a #tag in the label", () => {
+    const out = removeLinks("pre [docs #api](https://example.com/#frag) post");
+    expect(out).not.toContain("#api");
+    expect(out).not.toContain("#frag");
+    expect(out).toContain("pre");
+    expect(out).toContain("post");
+  });
+
+  test("an <autolink>'s inner URL is removed (the <> shell is harmless)", () => {
+    const out = removeLinks("see <https://x.com/#section> now");
+    expect(out).not.toContain("#section");
+  });
+
+  test("a www. bare URL (GFM autolink literal) is removed too", () => {
+    const out = removeLinks("see www.example.com/#section now");
+    expect(out).not.toContain("#section");
   });
 });

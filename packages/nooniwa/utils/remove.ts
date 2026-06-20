@@ -15,3 +15,11 @@ export function removeCode(text: string): string {
 export function removeCommentsAndCode(text: string): string {
   return removeComments(removeCode(text));
 }
+
+const MD_LINK_REGEX = /\[[^\]]*\]\([^)]*\)/g;
+
+const BARE_URL_REGEX = /\bhttps?:\/\/[^\s<>]+|(?<![\w@.])www\.[^\s<>]+/g;
+
+export function removeLinks(text: string): string {
+  return text.replace(MD_LINK_REGEX, "").replace(BARE_URL_REGEX, "");
+}
