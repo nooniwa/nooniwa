@@ -3,8 +3,9 @@ import type { ResolutionMap } from "../../utils/resolution-map";
 import { resolveWikilink } from "./resolve";
 import { slugToUrl, headingToAnchor } from "../../utils/slug";
 import { escapeHtml } from "./utils";
+import { renderIconHtml } from "../../icons";
 
-const EXPAND_ICON = "↗";
+const EXPAND_ICON = renderIconHtml("maximize-2", 16);
 
 function resolveAnchor(anchor: string | undefined): {
   type: "heading" | "block" | "full";
