@@ -1,0 +1,4 @@
+# Vitest
+__coverage__/
+__tests__/
+playwright.config.ts
