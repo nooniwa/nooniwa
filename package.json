@@ -5,13 +5,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "typecheck": "astro check --minimumSeverity warning",
+    "lint": "eslint . --max-warnings 0",
+    "format": "prettier -w --cache ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.32.1",
   "devDependencies": {
+    "@astrojs/check": "^0.9.9",
     "@eslint/js": "^10.0.1",
     "astro": "^6.4.2",
     "eslint": "^10.5.0",
@@ -22,6 +25,7 @@
     "prettier": "3.8.4",
     "prettier-plugin-astro": "0.14.1",
     "prettier-plugin-tailwindcss": "^0.8.0",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.1"
   }
 }
