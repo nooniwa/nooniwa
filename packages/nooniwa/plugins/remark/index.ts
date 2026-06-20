@@ -17,6 +17,7 @@ import { isImageFile, computeRelativeImagePath } from "./image";
 import { processEmbed } from "./embed";
 import { applyCallouts } from "./callout";
 import { processHighlights } from "./highlight";
+import { removeCommentsAcrossNodes } from "./comment";
 import {
   headingToAnchor,
   getContentRelativePath,
@@ -228,6 +229,8 @@ export function remarkNooniwa(options: RemarkNooniwaOptions) {
   return (tree: Root, file: VFile) => {
     const currentSlugPath = getSlugPath(file.path);
     const mdContentRelPath = getContentRelativePath(file.path);
+
+    removeCommentsAcrossNodes(tree);
 
     applyCallouts(tree);
 
