@@ -14,6 +14,11 @@ export default defineConfig([
     languageOptions: { globals: globals.browser },
   },
   tseslint.configs.recommended,
+  {
+    rules: {
+      "@typescript-eslint/triple-slash-reference": "off",
+    },
+  },
   ...eslintPluginAstro.configs["flat/recommended"],
   ...eslintPluginAstro.configs["flat/jsx-a11y-recommended"],
   {

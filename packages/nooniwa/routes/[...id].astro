@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from "astro:content";
+import "virtual:nooniwa/styles";
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages");
@@ -21,7 +22,7 @@ const { Content } = await render(page);
     <title>{page.data.title}</title>
     <meta name="description" content={page.data.description} />
   </head>
-  <body>
+  <body class="prose mx-auto max-w-3xl p-6">
     <Content />
   </body>
 </html>
