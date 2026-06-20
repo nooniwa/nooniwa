@@ -1,3 +1,4 @@
 @import "./theme.css";
 @import "./prose.css";
 @import "./scrollbar.css";
+@import "./syntax/index.css";

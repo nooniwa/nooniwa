@@ -1,0 +1,134 @@
+.callout {
+  border: none;
+  border-radius: 4px;
+  padding: 16px;
+  margin: 1em 0;
+  background-color: var(--callout-background);
+
+  font-style: normal;
+  quotes: none;
+
+  --callout-color: var(--color-callout-note);
+  --callout-background: color-mix(
+    in oklab,
+    var(--callout-color) 15%,
+    transparent
+  );
+}
+
+.callout::before,
+.callout::after {
+  content: none;
+}
+
+.callout p {
+  font-style: normal;
+}
+
+.callout p::before,
+.callout p::after {
+  content: none;
+}
+
+.callout-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--callout-color);
+  font-weight: 600;
+  font-size: 1em;
+}
+
+.callout.is-collapsible .callout-header {
+  cursor: pointer;
+}
+
+.callout-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.callout-fold {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+}
+
+.callout.is-collapsed .callout-fold {
+  transform: rotate(-90deg);
+}
+
+.callout.is-collapsed .callout-content {
+  display: none;
+}
+
+.callout-content {
+  margin-top: 6px;
+}
+
+.callout-content p,
+.callout-content ul,
+.callout-content ol {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.callout-note {
+  --callout-color: var(--color-callout-note);
+}
+
+.callout-abstract {
+  --callout-color: var(--color-callout-abstract);
+}
+
+.callout-info {
+  --callout-color: var(--color-callout-info);
+}
+
+.callout-todo {
+  --callout-color: var(--color-callout-todo);
+}
+
+.callout-tip {
+  --callout-color: var(--color-callout-tip);
+}
+
+.callout-success {
+  --callout-color: var(--color-callout-success);
+}
+
+.callout-question {
+  --callout-color: var(--color-callout-question);
+}
+
+.callout-warning {
+  --callout-color: var(--color-callout-warning);
+}
+
+.callout-failure {
+  --callout-color: var(--color-callout-failure);
+}
+
+.callout-danger {
+  --callout-color: var(--color-callout-danger);
+}
+
+.callout-bug {
+  --callout-color: var(--color-callout-bug);
+}
+
+.callout-example {
+  --callout-color: var(--color-callout-example);
+}
+
+.callout-quote {
+  --callout-color: var(--color-callout-quote);
+}
