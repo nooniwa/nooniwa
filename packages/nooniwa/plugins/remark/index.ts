@@ -1,7 +1,7 @@
-import { visit } from "unist-util-visit";
+import { SKIP, visit } from "unist-util-visit";
 import type {
   Root,
-  Text,
+  Nodes,
   Link,
   Image,
   Parent,
@@ -18,6 +18,7 @@ import { processEmbed } from "./embed";
 import { applyCallouts } from "./callout";
 import { applyBlockIds } from "./block-id";
 import { processHighlights } from "./highlight";
+import { processInlineTagsFromNodes } from "./inline-tag";
 import { removeCommentsAcrossNodes } from "./comment";
 import {
   headingToAnchor,
@@ -54,7 +55,11 @@ function processTextNode(
     const isEmbed = embedMarker === "!";
 
     if (match.index > lastIndex) {
-      nodes.push(...processHighlights(text.slice(lastIndex, match.index)));
+      nodes.push(
+        ...processInlineTagsFromNodes(
+          processHighlights(text.slice(lastIndex, match.index)),
+        ),
+      );
     }
     lastIndex = match.index + fullMatch.length;
 
@@ -172,7 +177,9 @@ function processTextNode(
   }
 
   if (lastIndex < text.length) {
-    nodes.push(...processHighlights(text.slice(lastIndex)));
+    nodes.push(
+      ...processInlineTagsFromNodes(processHighlights(text.slice(lastIndex))),
+    );
   }
 
   return nodes;
@@ -243,10 +250,16 @@ export function remarkNooniwa(options: RemarkNooniwaOptions) {
 
     visit(
       tree,
-      "text",
-      (node: Text, index: number | undefined, parent: Parent | undefined) => {
+      (node: Nodes, index: number | undefined, parent: Parent | undefined) => {
+        if (node.type === "link" || node.type === "linkReference") return SKIP;
+        if (node.type !== "text") return;
         if (index === undefined || !parent) return;
-        if (!node.value.includes("[[") && !node.value.includes("==")) return;
+        if (
+          !node.value.includes("[[") &&
+          !node.value.includes("==") &&
+          !node.value.includes("#")
+        )
+          return;
 
         const newNodes = processTextNode(
           node.value,
