@@ -1,5 +1,13 @@
 import { visit } from "unist-util-visit";
-import type { Root, Text, Link, Image, Parent, PhrasingContent } from "mdast";
+import type {
+  Root,
+  Text,
+  Link,
+  Image,
+  Parent,
+  Paragraph,
+  PhrasingContent,
+} from "mdast";
 import type { VFile } from "vfile";
 import type { AstroIntegrationLogger } from "astro";
 import type { ResolutionMap } from "../../utils/resolution-map";
@@ -8,7 +16,7 @@ import { WIKILINK_REGEX } from "./wikilink";
 import { isImageFile, computeRelativeImagePath } from "./image";
 import { processEmbed } from "./embed";
 import { applyCallouts } from "./callout";
-
+import { processHighlights } from "./highlight";
 import {
   headingToAnchor,
   getContentRelativePath,
@@ -44,7 +52,7 @@ function processTextNode(
     const isEmbed = embedMarker === "!";
 
     if (match.index > lastIndex) {
-      nodes.push({ type: "text", value: text.slice(lastIndex, match.index) });
+      nodes.push(...processHighlights(text.slice(lastIndex, match.index)));
     }
     lastIndex = match.index + fullMatch.length;
 
@@ -162,10 +170,56 @@ function processTextNode(
   }
 
   if (lastIndex < text.length) {
-    nodes.push({ type: "text", value: text.slice(lastIndex) });
+    nodes.push(...processHighlights(text.slice(lastIndex)));
   }
 
   return nodes;
+}
+
+function handleSplitHighlightMarkers(paragraph: Paragraph) {
+  const children = paragraph.children;
+
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    if (!child || child.type !== "text" || !child.value.endsWith("=="))
+      continue;
+
+    let hasNodesBetween = false;
+
+    for (let j = i + 1; j < children.length; j++) {
+      const next = children[j];
+      if (!next) break;
+
+      if (
+        next.type === "text" &&
+        next.value.startsWith("==") &&
+        hasNodesBetween
+      ) {
+        child.value = child.value.slice(0, -2);
+        next.value = next.value.slice(2);
+
+        const markOpen = {
+          type: "html" as const,
+          value: '<mark class="text-highlight">',
+        };
+        const markClose = { type: "html" as const, value: "</mark>" };
+
+        if (next.value === "") {
+          children.splice(j, 1, markClose);
+        } else {
+          children.splice(j, 0, markClose);
+        }
+        if (child.value === "") {
+          children.splice(i, 1, markOpen);
+        } else {
+          children.splice(i + 1, 0, markOpen);
+        }
+        break;
+      }
+
+      if (next.type !== "text") hasNodesBetween = true;
+    }
+  }
 }
 
 export function remarkNooniwa(options: RemarkNooniwaOptions) {
@@ -177,12 +231,16 @@ export function remarkNooniwa(options: RemarkNooniwaOptions) {
 
     applyCallouts(tree);
 
+    visit(tree, "paragraph", (node: Paragraph) => {
+      handleSplitHighlightMarkers(node);
+    });
+
     visit(
       tree,
       "text",
       (node: Text, index: number | undefined, parent: Parent | undefined) => {
         if (index === undefined || !parent) return;
-        if (!node.value.includes("[[")) return;
+        if (!node.value.includes("[[") && !node.value.includes("==")) return;
 
         const newNodes = processTextNode(
           node.value,
