@@ -49,4 +49,12 @@ describe("comment removal", () => {
     expect(html).toContain("b");
     expect(html).toContain("d");
   });
+
+  test("a pair spanning inline code drops the markers but keeps the code", async () => {
+    const html = await render(processor, "a %%`code`%% b");
+    expect(html).not.toContain("%%");
+    expect(html).toContain("<code>code</code>");
+    expect(html).toContain("a");
+    expect(html).toContain("b");
+  });
 });
