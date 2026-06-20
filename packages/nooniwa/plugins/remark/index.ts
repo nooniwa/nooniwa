@@ -7,6 +7,8 @@ import { resolveWikilink, resolveImage } from "./resolve";
 import { WIKILINK_REGEX } from "./wikilink";
 import { isImageFile, computeRelativeImagePath } from "./image";
 import { processEmbed } from "./embed";
+import { applyCallouts } from "./callout";
+
 import {
   headingToAnchor,
   getContentRelativePath,
@@ -172,6 +174,8 @@ export function remarkNooniwa(options: RemarkNooniwaOptions) {
   return (tree: Root, file: VFile) => {
     const currentSlugPath = getSlugPath(file.path);
     const mdContentRelPath = getContentRelativePath(file.path);
+
+    applyCallouts(tree);
 
     visit(
       tree,
