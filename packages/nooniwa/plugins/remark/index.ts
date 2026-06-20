@@ -16,6 +16,7 @@ import { WIKILINK_REGEX } from "./wikilink";
 import { isImageFile, computeRelativeImagePath } from "./image";
 import { processEmbed } from "./embed";
 import { applyCallouts } from "./callout";
+import { applyBlockIds } from "./block-id";
 import { processHighlights } from "./highlight";
 import { removeCommentsAcrossNodes } from "./comment";
 import {
@@ -233,6 +234,8 @@ export function remarkNooniwa(options: RemarkNooniwaOptions) {
     removeCommentsAcrossNodes(tree);
 
     applyCallouts(tree);
+
+    applyBlockIds(tree);
 
     visit(tree, "paragraph", (node: Paragraph) => {
       handleSplitHighlightMarkers(node);
