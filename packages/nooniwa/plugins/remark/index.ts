@@ -6,6 +6,7 @@ import type { ResolutionMap } from "../../utils/resolution-map";
 import { resolveWikilink, resolveImage } from "./resolve";
 import { WIKILINK_REGEX } from "./wikilink";
 import { isImageFile, computeRelativeImagePath } from "./image";
+import { processEmbed } from "./embed";
 import {
   headingToAnchor,
   getContentRelativePath,
@@ -98,7 +99,15 @@ function processTextNode(
     }
 
     if (isEmbed) {
-      nodes.push({ type: "text", value: fullMatch });
+      const embedHtml = processEmbed(
+        target,
+        anchor,
+        pageUrlMap,
+        currentSlugPath,
+        publishedSlugs,
+        logger,
+      );
+      nodes.push({ type: "html", value: embedHtml });
       continue;
     }
 

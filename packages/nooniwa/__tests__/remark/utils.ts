@@ -9,6 +9,7 @@ export const pageUrlMap: ResolutionMap = (() => {
   const map: ResolutionMap = {};
   addPageEntry(map, "wikilink/basic");
   addPageEntry(map, "wikilink/astro");
+  addPageEntry(map, "notes/target");
   return map;
 })();
 
