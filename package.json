@@ -12,6 +12,16 @@
   "license": "ISC",
   "packageManager": "pnpm@10.32.1",
   "devDependencies": {
-    "astro": "^6.4.2"
+    "@eslint/js": "^10.0.1",
+    "astro": "^6.4.2",
+    "eslint": "^10.5.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-astro": "^1.7.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "globals": "^17.6.0",
+    "prettier": "3.8.4",
+    "prettier-plugin-astro": "0.14.1",
+    "prettier-plugin-tailwindcss": "^0.8.0",
+    "typescript-eslint": "^8.61.1"
   }
 }
