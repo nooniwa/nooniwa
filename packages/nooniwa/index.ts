@@ -59,3 +59,4 @@ export default function nooniwa(options: NooniwaUserConfig): AstroIntegration {
 export { pagesSchema } from "./schema";
 export { pagesLoader } from "./loaders";
 export type { NooniwaConfig, NooniwaUserConfig } from "./types";
+export type { BacklinkEntry } from "./utils/backlinks";
