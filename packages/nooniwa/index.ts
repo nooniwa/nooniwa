@@ -60,3 +60,4 @@ export { pagesSchema } from "./schema";
 export { pagesLoader } from "./loaders";
 export type { NooniwaConfig, NooniwaUserConfig } from "./types";
 export type { BacklinkEntry } from "./utils/backlinks";
+export type { GraphNode, GraphLink, GraphData } from "./utils/graph";
