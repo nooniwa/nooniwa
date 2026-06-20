@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import type { ViteUserConfig } from "astro";
 import type { NooniwaConfig } from "../types";
+import type { ComponentName } from "../schemas/components";
 
 type VitePlugin = NonNullable<ViteUserConfig["plugins"]>[number];
 
@@ -14,16 +15,23 @@ const VM_PREFIX = "virtual:nooniwa/";
 interface PluginOptions {
   config: NooniwaConfig;
   userStylesPath: string;
+  componentPaths: Record<ComponentName, string>;
 }
 
 export function vitePluginUserConfig(options: PluginOptions): VitePlugin[] {
   const packagePath = fileURLToPath(new URL("..", import.meta.url));
 
-  const { config, userStylesPath } = options;
+  const { config, userStylesPath, componentPaths } = options;
 
   const modules = {
     [`${VM_PREFIX}config`]: `export default ${JSON.stringify(config)};`,
     [`${VM_PREFIX}styles`]: `import ${JSON.stringify(userStylesPath)};`,
+    ...Object.fromEntries(
+      Object.entries(componentPaths).map(([name, path]) => [
+        `${VM_PREFIX}components/${name}`,
+        `export { default } from ${JSON.stringify(path)};`,
+      ]),
+    ),
   } satisfies Record<string, string>;
 
   const resolutionMap = Object.fromEntries(

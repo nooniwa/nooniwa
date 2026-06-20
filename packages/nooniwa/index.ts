@@ -27,11 +27,22 @@ export default function nooniwa(options: NooniwaUserConfig): AstroIntegration {
         const rootPath = fileURLToPath(config.root);
         const userStylesPath = resolve(rootPath, parsed.styles);
 
+        const resolveUserPath = (id: string): string =>
+          id.startsWith(".") ? resolve(rootPath, id) : id;
+
+        const componentPaths = Object.fromEntries(
+          Object.entries(parsed.components).map(([name, path]) => [
+            name,
+            resolveUserPath(path),
+          ]),
+        ) as Record<import("./schemas/components.ts").ComponentName, string>;
+
         updateConfig({
           vite: {
             plugins: vitePluginUserConfig({
               config: parsed,
               userStylesPath,
+              componentPaths,
             }),
           },
         });

@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
-import "virtual:nooniwa/styles";
+import config from "virtual:nooniwa/config";
+import Page from "virtual:nooniwa/components/Page";
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages");
@@ -9,20 +10,19 @@ export async function getStaticPaths() {
     props: { page },
   }));
 }
+const { siteTitle, siteDescription } = config;
 
 const { page } = Astro.props;
 const { Content } = await render(page);
+
+const title =
+  page.id === "index"
+    ? page.data.title || siteTitle
+    : page.data.title || page.id.split("/").pop() || "Untitled";
+
+const description = page.data.description ?? siteDescription;
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{page.data.title}</title>
-    <meta name="description" content={page.data.description} />
-  </head>
-  <body class="prose mx-auto max-w-3xl p-6">
-    <Content />
-  </body>
-</html>
+<Page title={title} description={description}>
+  <Content />
+</Page>
