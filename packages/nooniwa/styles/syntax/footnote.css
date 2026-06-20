@@ -1,0 +1,27 @@
+[data-footnote-ref]::before {
+  content: "[";
+}
+
+[data-footnote-ref]::after {
+  content: "]";
+}
+
+a[data-footnote-ref] {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a[data-footnote-ref]:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+a[data-footnote-backref] {
+  color: var(--color-accent-muted);
+  text-decoration: none;
+}
+
+a[data-footnote-backref]:hover {
+  color: var(--color-accent);
+  text-decoration: none;
+}

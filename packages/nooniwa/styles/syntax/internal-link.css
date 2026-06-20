@@ -1,0 +1,15 @@
+.internal-link {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.internal-link:hover {
+  color: var(--color-accent-hover);
+}
+
+.internal-link-unresolved {
+  color: var(--color-accent-muted);
+  text-decoration: none;
+  cursor: not-allowed;
+}

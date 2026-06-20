@@ -1,1 +1,6 @@
+@import "./internal-link.css";
+@import "./external-link.css";
+@import "./embed.css";
 @import "./callout.css";
+@import "./highlight.css";
+@import "./footnote.css";

@@ -1,0 +1,25 @@
+.text-highlight,
+mark.text-highlight {
+  background-color: var(--color-highlight);
+  color: inherit;
+  padding: 0.1em 0.2em;
+}
+
+.hash-highlight {
+  animation: hash-highlight-anim 3s linear;
+}
+
+.page-body .hash-highlight code:not(:where(pre *)) {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+@keyframes hash-highlight-anim {
+  0%,
+  99% {
+    background-color: var(--color-highlight);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
