@@ -10,6 +10,11 @@ declare module "virtual:nooniwa/components/Page" {
   export default Page;
 }
 
+declare module "virtual:nooniwa/components/PageFrame" {
+  const PageFrame: typeof import("./components/PageFrame.astro").default;
+  export default PageFrame;
+}
+
 declare module "virtual:nooniwa/components/PageMain" {
   const PageMain: typeof import("./components/PageMain.astro").default;
   export default PageMain;

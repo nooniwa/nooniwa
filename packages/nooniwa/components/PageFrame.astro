@@ -1,0 +1,15 @@
+---
+import Header from "virtual:nooniwa/components/Header";
+import Footer from "virtual:nooniwa/components/Footer";
+---
+
+<Header />
+<div
+  class="page-frame mx-auto grid min-h-svh max-w-352 grid-cols-[minmax(0,1fr)] print:block print:min-h-0 print:max-w-none"
+>
+  <div class="flex flex-col">
+    <div class="h-14 print:hidden"></div>
+    <slot />
+    <Footer />
+  </div>
+</div>

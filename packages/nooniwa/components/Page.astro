@@ -3,12 +3,11 @@ import config from "virtual:nooniwa/config";
 import "virtual:nooniwa/styles";
 
 import SkipLink from "virtual:nooniwa/components/SkipLink";
-import Header from "virtual:nooniwa/components/Header";
+import PageFrame from "virtual:nooniwa/components/PageFrame";
 import PageMain from "virtual:nooniwa/components/PageMain";
 import PageBeforeBody from "virtual:nooniwa/components/PageBeforeBody";
 import PageBody from "virtual:nooniwa/components/PageBody";
 import PageAfterBody from "virtual:nooniwa/components/PageAfterBody";
-import Footer from "virtual:nooniwa/components/Footer";
 import type { BacklinkEntry } from "../utils/backlinks";
 
 interface Props {
@@ -64,23 +63,22 @@ const headTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
     class="min-h-svh bg-(--color-background) text-(--color-foreground) print:min-h-0"
   >
     <SkipLink />
-    <Header />
-    <div class="h-14"></div>
-    <PageMain>
-      <article data-pagefind-body>
-        <PageBeforeBody
-          title={title}
-          created={created}
-          updated={updated}
-          tags={tags}
-        />
-        <PageBody>
-          <slot />
-        </PageBody>
-      </article>
-      <PageAfterBody backlinks={backlinks} />
-    </PageMain>
-    <Footer />
+    <PageFrame>
+      <PageMain>
+        <article data-pagefind-body>
+          <PageBeforeBody
+            title={title}
+            created={created}
+            updated={updated}
+            tags={tags}
+          />
+          <PageBody>
+            <slot />
+          </PageBody>
+        </article>
+        <PageAfterBody backlinks={backlinks} />
+      </PageMain>
+    </PageFrame>
 
     <style is:global>
       html {

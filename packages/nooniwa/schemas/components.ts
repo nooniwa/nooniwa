@@ -7,6 +7,7 @@ export function ComponentConfigSchema() {
 
   const defaults = {
     Page: path("Page"),
+    PageFrame: path("PageFrame"),
     PageMain: path("PageMain"),
     PageBody: path("PageBody"),
     PageBeforeBody: path("PageBeforeBody"),
@@ -22,6 +23,7 @@ export function ComponentConfigSchema() {
   return z
     .object({
       Page: z.string().default(defaults.Page),
+      PageFrame: z.string().default(defaults.PageFrame),
       PageMain: z.string().default(defaults.PageMain),
       PageBody: z.string().default(defaults.PageBody),
       PageBeforeBody: z.string().default(defaults.PageBeforeBody),
