@@ -1,0 +1,16 @@
+.page-body code::before,
+.page-body code::after,
+.page-preview code::before,
+.page-preview code::after {
+  content: none;
+}
+
+.page-body :not(pre) > code,
+.page-preview :not(pre) > code {
+  background-color: var(--color-background-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  padding: 0.2em 0.4em;
+  font-weight: 400;
+  font-family: var(--font-mono);
+}

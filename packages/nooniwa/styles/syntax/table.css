@@ -1,0 +1,6 @@
+.page-body table,
+.page-preview table {
+  display: block;
+  overflow-x: auto;
+  @apply scrollbar-nooniwa;
+}

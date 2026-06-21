@@ -2,12 +2,25 @@ import { fileURLToPath } from "node:url";
 import { z } from "astro/zod";
 
 export function ComponentConfigSchema() {
+  const path = (name: string) =>
+    fileURLToPath(new URL(`../components/${name}.astro`, import.meta.url));
+
   const defaults = {
-    Page: fileURLToPath(new URL("../components/Page.astro", import.meta.url)),
+    Page: path("Page"),
+    PageMain: path("PageMain"),
+    PageBody: path("PageBody"),
+    PageBeforeBody: path("PageBeforeBody"),
+    PageTitle: path("PageTitle"),
+    SkipLink: path("SkipLink"),
   };
   return z
     .object({
       Page: z.string().default(defaults.Page),
+      PageMain: z.string().default(defaults.PageMain),
+      PageBody: z.string().default(defaults.PageBody),
+      PageBeforeBody: z.string().default(defaults.PageBeforeBody),
+      PageTitle: z.string().default(defaults.PageTitle),
+      SkipLink: z.string().default(defaults.SkipLink),
     })
     .default(defaults);
 }

@@ -2,12 +2,20 @@
 import config from "virtual:nooniwa/config";
 import "virtual:nooniwa/styles";
 
+import SkipLink from "virtual:nooniwa/components/SkipLink";
+import PageMain from "virtual:nooniwa/components/PageMain";
+import PageBeforeBody from "virtual:nooniwa/components/PageBeforeBody";
+import PageBody from "virtual:nooniwa/components/PageBody";
+
 interface Props {
   title: string;
   description?: string | undefined;
+  created?: Date | undefined;
+  updated?: Date | undefined;
+  tags?: string[] | undefined;
 }
 
-const { title, description } = Astro.props;
+const { title, description, created, updated, tags = [] } = Astro.props;
 
 const { siteTitle } = config;
 
@@ -21,9 +29,48 @@ const headTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{headTitle}</title>
     {description && <meta name="description" content={description} />}
+
+    <script is:inline>
+      (function () {
+        const raw = localStorage.getItem("nooniwa:color-theme");
+        const setting =
+          raw === "light" || raw === "dark" || raw === "auto" ? raw : "auto";
+        const effective =
+          setting === "auto"
+            ? window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light"
+            : setting;
+        if (effective === "dark") {
+          document.documentElement.classList.add("dark");
+        }
+        document.documentElement.dataset.theme = effective;
+      })();
+    </script>
   </head>
-  <body class="prose mx-auto max-w-3xl p-6">
-    <h1>{title}</h1>
-    <slot />
+  <body
+    class="min-h-svh bg-(--color-background) text-(--color-foreground) print:min-h-0"
+  >
+    <SkipLink />
+    <PageMain>
+      <article data-pagefind-body>
+        <PageBeforeBody
+          title={title}
+          created={created}
+          updated={updated}
+          tags={tags}
+        />
+        <PageBody>
+          <slot />
+        </PageBody>
+      </article>
+    </PageMain>
+
+    <style is:global>
+      html {
+        scroll-padding-top: 4.25rem;
+        overflow-y: scroll;
+      }
+    </style>
   </body>
 </html>

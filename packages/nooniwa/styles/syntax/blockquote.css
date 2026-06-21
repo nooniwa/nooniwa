@@ -1,0 +1,9 @@
+.page-body blockquote:not(.callout),
+.page-preview blockquote:not(.callout) {
+  border-left: 2px solid var(--color-accent-muted);
+  padding-left: 1em;
+  margin-left: 0;
+  font-style: normal;
+  color: inherit;
+  quotes: none;
+}

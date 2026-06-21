@@ -4,3 +4,6 @@
 @import "./callout.css";
 @import "./highlight.css";
 @import "./footnote.css";
+@import "./blockquote.css";
+@import "./table.css";
+@import "./inline-code.css";

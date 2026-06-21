@@ -1,0 +1,16 @@
+---
+import PageTitle from "virtual:nooniwa/components/PageTitle";
+
+interface Props {
+  title: string;
+  created?: Date | undefined;
+  updated?: Date | undefined;
+  tags?: string[];
+}
+
+const { title } = Astro.props;
+---
+
+<header class="prose prose-nooniwa mb-8 max-w-none">
+  <PageTitle title={title} />
+</header>
