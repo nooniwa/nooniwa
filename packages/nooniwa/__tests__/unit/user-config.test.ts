@@ -39,6 +39,7 @@ describe("OptionsSchema (defaults)", () => {
     expect(result.data.favicon).toEqual({});
     expect(result.data.logo).toBeUndefined();
     expect(result.data.ogImage).toBeUndefined();
+    expect(result.data.head).toEqual([]);
   });
 
   test("accepts search set to false", () => {
@@ -101,6 +102,29 @@ describe("OptionsSchema (site assets)", () => {
         logo: { dark: "/dark.svg", light: "/light.svg" },
       }).success,
     ).toBe(true);
+  });
+});
+
+describe("OptionsSchema (head)", () => {
+  test("accepts script entries (the GA4-style shape)", () => {
+    const result = OptionsSchema.safeParse({
+      ...minimal,
+      head: [
+        { tag: "script", attrs: { async: true, src: "https://x/gtag.js" } },
+        { tag: "script", content: "gtag('config', 'G-X');" },
+      ],
+    });
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.head).toHaveLength(2);
+  });
+
+  test("rejects an unknown tag name", () => {
+    const result = OptionsSchema.safeParse({
+      ...minimal,
+      head: [{ tag: "div" }],
+    });
+    expect(result.success).toBe(false);
   });
 });
 

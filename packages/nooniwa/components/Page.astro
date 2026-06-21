@@ -1,5 +1,6 @@
 ---
 import config from "virtual:nooniwa/config";
+import pkg from "../package.json";
 import "virtual:nooniwa/styles";
 
 import SkipLink from "virtual:nooniwa/components/SkipLink";
@@ -10,6 +11,7 @@ import PageBody from "virtual:nooniwa/components/PageBody";
 import PageAfterBody from "virtual:nooniwa/components/PageAfterBody";
 import PageOverlays from "virtual:nooniwa/components/PageOverlays";
 import type { MarkdownHeading } from "astro";
+import type { HeadConfig } from "../schemas/head";
 import type { BacklinkEntry } from "../utils/backlinks";
 import type { TreeNode } from "../utils/folder-tree";
 import type { GraphNode, GraphLink } from "../utils/graph";
@@ -42,12 +44,19 @@ const {
   hasFullGraph,
 } = Astro.props;
 
-const { siteTitle, favicon, ogImage } = config;
+const { siteTitle, favicon, ogImage, head, rss } = config;
+
+const generator = `${pkg.name} v${pkg.version}`;
 
 const headTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
 
+const canonicalUrl = Astro.site
+  ? new URL(currentPath, Astro.site).href
+  : undefined;
 const ogImageUrl =
   ogImage && Astro.site ? new URL(ogImage.src, Astro.site).href : undefined;
+const rssUrl = Astro.site ? new URL("/rss.xml", Astro.site).href : undefined;
+const ogType = currentPath === "/" ? "website" : "article";
 ---
 
 <!doctype html>
@@ -55,8 +64,16 @@ const ogImageUrl =
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>{headTitle}</title>
-    {description && <meta name="description" content={description} />}
+
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+
+    {
+      head.map(({ tag: Tag, attrs, content }: HeadConfig[number]) => (
+        <Tag {...attrs} set:html={content} />
+      ))
+    }
 
     {favicon.ico && <link rel="icon" href={favicon.ico} sizes="32x32" />}
     {favicon.svg && <link rel="icon" href={favicon.svg} type="image/svg+xml" />}
@@ -71,6 +88,27 @@ const ogImageUrl =
     }
 
     {
+      rss && rssUrl && (
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title={siteTitle}
+          href={rssUrl}
+        />
+      )
+    }
+
+    {description && <meta name="description" content={description} />}
+
+    <meta name="generator" content={Astro.generator} />
+    <meta name="generator" content={generator} />
+
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:type" content={ogType} />
+    {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+    <meta property="og:site_name" content={siteTitle} />
+    {
       ogImage && ogImageUrl && (
         <>
           <meta property="og:image" content={ogImageUrl} />
@@ -78,6 +116,11 @@ const ogImageUrl =
         </>
       )
     }
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
 
     <script is:inline>
       (function () {
