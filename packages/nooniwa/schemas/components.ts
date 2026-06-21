@@ -14,6 +14,7 @@ export function ComponentConfigSchema() {
     PageTitle: path("PageTitle"),
     PageMetadata: path("PageMetadata"),
     Backlinks: path("Backlinks"),
+    Footer: path("Footer"),
     SkipLink: path("SkipLink"),
   };
   return z
@@ -26,6 +27,7 @@ export function ComponentConfigSchema() {
       PageTitle: z.string().default(defaults.PageTitle),
       PageMetadata: z.string().default(defaults.PageMetadata),
       Backlinks: z.string().default(defaults.Backlinks),
+      Footer: z.string().default(defaults.Footer),
       SkipLink: z.string().default(defaults.SkipLink),
     })
     .default(defaults);

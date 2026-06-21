@@ -1,0 +1,47 @@
+---
+import config from "virtual:nooniwa/config";
+
+const { copyright, credits } = config;
+const year = copyright?.year ?? new Date().getFullYear();
+const builtWithHref = "https://github.com/nooniwa/nooniwa";
+---
+
+{
+  (copyright || credits) && (
+    <div class="mx-auto w-full max-w-3xl px-6 md:px-8">
+      <footer class="border-t border-(--color-border) py-8 text-center text-xs text-(--color-foreground-muted)">
+        {copyright && (
+          <p class="m-0 mb-2">
+            Copyright © {year}{" "}
+            {copyright.href ? (
+              <a
+                href={copyright.href}
+                target="_blank"
+                rel="me noopener"
+                class="underline hover:text-(--color-foreground)"
+              >
+                {copyright.name}
+              </a>
+            ) : (
+              copyright.name
+            )}{" "}
+            All rights reserved.
+          </p>
+        )}
+        {credits && (
+          <p class="m-0">
+            Built with{" "}
+            <a
+              href={builtWithHref}
+              target="_blank"
+              rel="noopener"
+              class="underline hover:text-(--color-foreground)"
+            >
+              nooniwa
+            </a>
+          </p>
+        )}
+      </footer>
+    </div>
+  )
+}

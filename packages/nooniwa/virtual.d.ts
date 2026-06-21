@@ -45,6 +45,11 @@ declare module "virtual:nooniwa/components/Backlinks" {
   export default Backlinks;
 }
 
+declare module "virtual:nooniwa/components/Footer" {
+  const Footer: typeof import("./components/Footer.astro").default;
+  export default Footer;
+}
+
 declare module "virtual:nooniwa/components/SkipLink" {
   const SkipLink: typeof import("./components/SkipLink.astro").default;
   export default SkipLink;

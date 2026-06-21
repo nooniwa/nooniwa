@@ -1,11 +1,14 @@
 import { z } from "astro/zod";
 import { ComponentConfigSchema } from "../schemas/components";
+import { CopyrightSchema } from "../schemas/copyright";
 
 export const OptionsSchema = z.strictObject({
   siteTitle: z.string(),
   siteDescription: z.string().optional(),
   lang: z.string().default("en"),
   styles: z.string().min(1),
+  copyright: CopyrightSchema(),
+  credits: z.boolean().default(true),
   components: ComponentConfigSchema(),
 });
 

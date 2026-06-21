@@ -10,6 +10,10 @@ export default defineConfig({
     nooniwa({
       siteTitle: "nooniwa",
       styles: "./src/styles/global.css",
+      copyright: {
+        name: "nooniwa",
+        href: "https://github.com/nooniwa/nooniwa",
+      },
     }),
   ],
   vite: {

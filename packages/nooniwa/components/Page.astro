@@ -7,6 +7,7 @@ import PageMain from "virtual:nooniwa/components/PageMain";
 import PageBeforeBody from "virtual:nooniwa/components/PageBeforeBody";
 import PageBody from "virtual:nooniwa/components/PageBody";
 import PageAfterBody from "virtual:nooniwa/components/PageAfterBody";
+import Footer from "virtual:nooniwa/components/Footer";
 import type { BacklinkEntry } from "../utils/backlinks";
 
 interface Props {
@@ -76,6 +77,7 @@ const headTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
       </article>
       <PageAfterBody backlinks={backlinks} />
     </PageMain>
+    <Footer />
 
     <style is:global>
       html {
