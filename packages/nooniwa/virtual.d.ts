@@ -30,6 +30,11 @@ declare module "virtual:nooniwa/components/PageTitle" {
   export default PageTitle;
 }
 
+declare module "virtual:nooniwa/components/PageMetadata" {
+  const PageMetadata: typeof import("./components/PageMetadata.astro").default;
+  export default PageMetadata;
+}
+
 declare module "virtual:nooniwa/components/SkipLink" {
   const SkipLink: typeof import("./components/SkipLink.astro").default;
   export default SkipLink;

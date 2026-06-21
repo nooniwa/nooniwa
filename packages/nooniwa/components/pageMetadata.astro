@@ -1,0 +1,58 @@
+---
+import config from "virtual:nooniwa/config";
+import Icon from "./Icon.astro";
+
+interface Props {
+  created?: Date | undefined;
+  updated?: Date | undefined;
+  tags?: string[];
+}
+
+const { created, updated, tags = [] } = Astro.props;
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString(config.lang, {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+}
+
+const showUpdated =
+  updated && created && updated.getTime() !== created.getTime();
+---
+
+<div
+  class="flex flex-wrap items-center gap-4 text-sm text-(--color-foreground-muted)"
+>
+  {
+    (created || updated) && (
+      <div class="flex items-center gap-4">
+        {created && (
+          <span class="flex items-center gap-1">
+            <Icon name="calendar" class="h-4 w-4" />
+            <time datetime={created.toISOString()}>{formatDate(created)}</time>
+          </span>
+        )}
+        {showUpdated && (
+          <span class="flex items-center gap-1">
+            <Icon name="refresh-cw" class="h-4 w-4" />
+            <time datetime={updated.toISOString()}>{formatDate(updated)}</time>
+          </span>
+        )}
+      </div>
+    )
+  }
+
+  {
+    tags.length > 0 && (
+      <div class="flex flex-wrap items-center gap-2">
+        {tags.map((tag) => (
+          <button type="button" data-tag={tag} class="tag">
+            #{tag}
+          </button>
+        ))}
+      </div>
+    )
+  }
+</div>

@@ -1,5 +1,6 @@
 ---
 import PageTitle from "virtual:nooniwa/components/PageTitle";
+import PageMetadata from "virtual:nooniwa/components/PageMetadata";
 
 interface Props {
   title: string;
@@ -8,9 +9,10 @@ interface Props {
   tags?: string[];
 }
 
-const { title } = Astro.props;
+const { title, created, updated, tags = [] } = Astro.props;
 ---
 
 <header class="prose prose-nooniwa mb-8 max-w-none">
   <PageTitle title={title} />
+  <PageMetadata created={created} updated={updated} tags={tags} />
 </header>

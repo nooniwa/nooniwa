@@ -11,6 +11,7 @@ export function ComponentConfigSchema() {
     PageBody: path("PageBody"),
     PageBeforeBody: path("PageBeforeBody"),
     PageTitle: path("PageTitle"),
+    PageMetadata: path("PageMetadata"),
     SkipLink: path("SkipLink"),
   };
   return z
@@ -20,6 +21,7 @@ export function ComponentConfigSchema() {
       PageBody: z.string().default(defaults.PageBody),
       PageBeforeBody: z.string().default(defaults.PageBeforeBody),
       PageTitle: z.string().default(defaults.PageTitle),
+      PageMetadata: z.string().default(defaults.PageMetadata),
       SkipLink: z.string().default(defaults.SkipLink),
     })
     .default(defaults);

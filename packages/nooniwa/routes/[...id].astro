@@ -21,8 +21,16 @@ const title =
     : page.data.title || page.id.split("/").pop() || "Untitled";
 
 const description = page.data.description ?? siteDescription;
+
+const { created, updated, tags } = page.data;
 ---
 
-<Page title={title} description={description}>
+<Page
+  title={title}
+  description={description}
+  created={created}
+  updated={updated}
+  tags={tags}
+>
   <Content />
 </Page>
