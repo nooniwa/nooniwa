@@ -109,5 +109,21 @@ const headTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
         overflow-y: scroll;
       }
     </style>
+
+    <script>
+      import { initCalloutFold } from "../scripts/callout";
+      import { initPagePreview } from "../scripts/page-preview";
+      import { initFootnotePopover } from "../scripts/footnote-popover";
+      import { initHeadingAnchors } from "../scripts/heading-anchors";
+      import { initHashHighlight } from "../scripts/hash-highlight";
+      import { initEmbedFallback } from "../scripts/embed-fallback";
+
+      initEmbedFallback();
+      initCalloutFold();
+      initHeadingAnchors();
+      initPagePreview();
+      initFootnotePopover();
+      initHashHighlight();
+    </script>
   </body>
 </html>

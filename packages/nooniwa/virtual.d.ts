@@ -60,6 +60,11 @@ declare module "virtual:nooniwa/components/PageOverlays" {
   export default PageOverlays;
 }
 
+declare module "virtual:nooniwa/components/PagePreview" {
+  const PagePreview: typeof import("./components/PagePreview.astro").default;
+  export default PagePreview;
+}
+
 declare module "virtual:nooniwa/components/PageBody" {
   const PageBody: typeof import("./components/PageBody.astro").default;
   export default PageBody;

@@ -1,0 +1,16 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<div id="page-preview-container" class="print:hidden">
+  <div id="page-preview" class="page-preview" aria-hidden="true">
+    <button class="page-preview-link" type="button" aria-label="Open link">
+      <Icon name="link" class="page-preview-icon-link h-3.5 w-3.5" />
+    </button>
+    <div class="page-preview-title"></div>
+    <div
+      class="page-preview-content prose prose-nooniwa prose-headings:scroll-mt-3 prose-a:text-(--color-accent) prose-a:no-underline prose-a:hover:underline max-w-none"
+    >
+    </div>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+.heading-anchor {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  color: var(--color-foreground-muted);
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+h2:hover .heading-anchor,
+h3:hover .heading-anchor,
+h4:hover .heading-anchor,
+h5:hover .heading-anchor,
+h6:hover .heading-anchor,
+.heading-anchor:focus-visible {
+  opacity: 1;
+}
+
+.heading-anchor:hover,
+.heading-anchor:focus-visible {
+  color: var(--color-foreground);
+}

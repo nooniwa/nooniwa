@@ -1,0 +1,131 @@
+.page-preview {
+  position: fixed;
+  z-index: 100;
+  width: 400px;
+  max-width: 90vw;
+  max-height: 60vh;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.15s ease,
+    visibility 0.15s ease;
+  pointer-events: none;
+  padding: 0;
+  --preview-scrollbar-gap: 0px;
+  --preview-padding: 32px;
+  --preview-icon-size: 14px;
+}
+
+.page-preview.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.dark .page-preview {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.page-preview-title {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--color-foreground);
+  margin: 0 0 10px;
+}
+
+.page-preview-content {
+  overflow-y: auto;
+  max-height: calc(60vh - (var(--preview-padding) * 2));
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-foreground-muted);
+  padding: var(--preview-padding);
+  scrollbar-width: auto;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+  @apply scrollbar-nooniwa;
+}
+
+.page-preview-content p {
+  margin: 0 0 0.5em;
+}
+
+.page-preview-content h1,
+.page-preview-content h2,
+.page-preview-content h3,
+.page-preview-content h4,
+.page-preview-content h5,
+.page-preview-content h6 {
+  font-size: 1em;
+  font-weight: 600;
+  margin: 0 0 0.5em;
+}
+
+.page-preview-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  color: var(--color-foreground-muted);
+}
+
+.page-preview-link {
+  position: absolute;
+  top: calc(var(--preview-padding) / 2 - var(--preview-icon-size) / 2);
+  right: calc(
+    var(--preview-padding) / 2 - var(--preview-icon-size) / 2 +
+      var(--preview-scrollbar-gap)
+  );
+  width: var(--preview-icon-size);
+  height: var(--preview-icon-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-foreground-muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.page-preview-link:hover {
+  color: var(--color-foreground);
+}
+
+.page-preview:not(.title-only) .page-preview-title {
+  display: none;
+}
+
+.page-preview.title-only .page-preview-content {
+  display: none;
+}
+
+.page-preview.title-only .page-preview-title {
+  margin: 0;
+}
+
+.page-preview.title-only {
+  padding: var(--preview-padding);
+}
+
+.page-preview.title-only .page-preview-link {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.page-preview.has-scroll .page-preview-link {
+  --preview-scrollbar-gap: 16px;
+}
+
+.page-preview.has-scroll .page-preview-content {
+  padding: var(--preview-padding);
+  overflow-y: scroll;
+}

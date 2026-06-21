@@ -1,6 +1,7 @@
 ---
 import GraphModal from "virtual:nooniwa/components/GraphModal";
 import TagModal from "virtual:nooniwa/components/TagModal";
+import PagePreview from "virtual:nooniwa/components/PagePreview";
 import type { GraphNode, GraphLink } from "../utils/graph";
 
 interface Props {
@@ -18,3 +19,5 @@ const { localGraph, currentPath } = Astro.props;
 />
 
 <TagModal />
+
+<PagePreview />

@@ -7,6 +7,8 @@
 @import "./backlinks.css";
 @import "./footnote.css";
 @import "./graph.css";
+@import "./page-preview.css";
+@import "./heading-anchor.css";
 @import "./blockquote.css";
 @import "./table.css";
 @import "./inline-code.css";
