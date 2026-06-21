@@ -1,0 +1,372 @@
+---
+import type { TreeNode } from "../utils/folder-tree";
+import { shouldBeOpen } from "../utils/folder-tree";
+import Icon from "./Icon.astro";
+
+interface Props {
+  nodes: TreeNode[];
+  currentPath: string;
+  basePath?: string;
+  isRoot?: boolean;
+  depth?: number;
+}
+
+const {
+  nodes,
+  currentPath,
+  basePath = "",
+  isRoot = true,
+  depth = 0,
+} = Astro.props;
+const isRootLevel = basePath === "";
+---
+
+<ul class="folder-tree text-sm">
+  {
+    nodes.map((node) => {
+      const nodePath = basePath ? `${basePath}/${node.name}` : node.name;
+      const folderPathNormalized = nodePath.toLowerCase();
+      const isActive = node.url && currentPath === node.url;
+
+      if (node.isFolder) {
+        const defaultOpen = shouldBeOpen(folderPathNormalized, currentPath);
+
+        return (
+          <li>
+            <details
+              class="folder-details"
+              data-folder-path={folderPathNormalized}
+              open={defaultOpen}
+            >
+              <summary class="tree-folder">
+                <span class="tree-guides" aria-hidden="true">
+                  {Array.from({ length: depth }, (_, i) => (
+                    <span
+                      class:list={[
+                        "tree-guide",
+                        i === depth - 1 ? "tree-guide-inner" : undefined,
+                      ]}
+                    />
+                  ))}
+                </span>
+                <span class="tree-toggle-slot" aria-hidden="true">
+                  <Icon
+                    name="chevron-down"
+                    class="tree-toggle-icon h-3 w-3 shrink-0 text-(--color-foreground-muted)"
+                  />
+                </span>
+                <span class="tree-folder-label truncate text-(--color-foreground)">
+                  {node.name}
+                </span>
+              </summary>
+              <div class="tree-children">
+                <Astro.self
+                  nodes={node.children}
+                  currentPath={currentPath}
+                  basePath={nodePath}
+                  isRoot={false}
+                  depth={depth + 1}
+                />
+              </div>
+            </details>
+          </li>
+        );
+      } else {
+        if (isRootLevel) {
+          return (
+            <li class="tree-item-root">
+              <a
+                href={node.url}
+                class:list={[
+                  "tree-link-root truncate transition-colors",
+                  isActive
+                    ? "font-medium text-(--color-accent)"
+                    : "text-(--color-foreground-muted) hover:text-(--color-foreground)",
+                ]}
+                title={node.title}
+              >
+                {node.title}
+              </a>
+            </li>
+          );
+        }
+
+        return (
+          <li class="tree-item">
+            <a
+              href={node.url}
+              class:list={["tree-link", isActive ? "active" : ""]}
+              title={node.title}
+            >
+              <span class="tree-guides" aria-hidden="true">
+                {Array.from({ length: depth }, (_, i) => (
+                  <span
+                    class:list={[
+                      "tree-guide",
+                      i === depth - 1 ? "tree-guide-inner" : undefined,
+                    ]}
+                  />
+                ))}
+              </span>
+              <span class="tree-spacer" aria-hidden="true" />
+              <span
+                class:list={[
+                  "tree-text truncate transition-colors",
+                  isActive
+                    ? "font-medium text-(--color-accent)"
+                    : "text-(--color-foreground-muted)",
+                ]}
+              >
+                {node.title}
+              </span>
+            </a>
+          </li>
+        );
+      }
+    })
+  }
+</ul>
+
+<style>
+  .folder-tree {
+    --tree-toggle-width: 1rem;
+    --tree-label-gap: 0.35rem;
+    --tree-row-padding-y: 0.25rem;
+    --tree-row-padding-right: 0.5rem;
+    --tree-guide-width: 1rem;
+    --tree-spacer-width: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .tree-folder,
+  .tree-link {
+    display: flex;
+    min-width: 0;
+    align-items: stretch;
+  }
+
+  .tree-folder-label,
+  .tree-text {
+    min-width: 0;
+    padding-top: var(--tree-row-padding-y);
+    padding-right: var(--tree-row-padding-right);
+    padding-bottom: var(--tree-row-padding-y);
+  }
+
+  .tree-folder-label {
+    font-weight: 600;
+  }
+
+  .tree-folder {
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .tree-toggle-slot,
+  .tree-toggle-icon {
+    width: var(--tree-toggle-width);
+    min-width: var(--tree-toggle-width);
+    flex: 0 0 var(--tree-toggle-width);
+  }
+
+  .tree-toggle-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+  }
+
+  .tree-toggle-icon {
+    align-self: center;
+  }
+
+  .tree-guides {
+    display: flex;
+    flex: 0 0 auto;
+    align-self: stretch;
+  }
+
+  .tree-guide,
+  .tree-spacer {
+    position: relative;
+    width: var(--tree-guide-width);
+    min-width: var(--tree-guide-width);
+    flex: 0 0 var(--tree-guide-width);
+  }
+
+  .tree-guide {
+    align-self: stretch;
+  }
+
+  .tree-guide::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    transform: translateX(-50%);
+    background-color: --alpha(var(--color-foreground) / 12%);
+  }
+
+  .tree-link {
+    text-decoration: none;
+  }
+
+  .tree-spacer {
+    width: var(--tree-spacer-width);
+    min-width: var(--tree-spacer-width);
+    flex-basis: var(--tree-spacer-width);
+    align-self: stretch;
+  }
+
+  .tree-folder-label,
+  .tree-text {
+    padding-left: var(--tree-label-gap);
+  }
+
+  .tree-link-root {
+    display: block;
+    margin-left: calc(var(--tree-toggle-width) + var(--tree-label-gap));
+    padding-top: var(--tree-row-padding-y);
+    padding-right: var(--tree-row-padding-right);
+    padding-bottom: var(--tree-row-padding-y);
+  }
+
+  details summary svg {
+    transition: transform 0.2s ease-in-out;
+  }
+
+  details:not([open]) summary svg {
+    transform: rotate(-90deg);
+  }
+
+  details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  details summary::marker {
+    display: none;
+    content: "";
+  }
+
+  .tree-folder:hover .tree-toggle-icon {
+    color: var(--color-foreground);
+  }
+
+  .tree-link:hover .tree-guide-inner::before {
+    background-color: --alpha(var(--color-foreground) / 45%) !important;
+  }
+
+  .tree-link:hover .tree-text {
+    color: var(--color-foreground);
+  }
+
+  .tree-link.active .tree-guide-inner::before,
+  .tree-link.active:hover .tree-guide-inner::before {
+    background-color: var(--color-accent) !important;
+  }
+
+  .tree-link.active .tree-text,
+  .tree-link.active:hover .tree-text {
+    color: var(--color-accent) !important;
+  }
+</style>
+
+{
+  isRoot && (
+    <script is:inline>
+      (function () {
+        const raw = sessionStorage.getItem("nooniwa:folder-tree");
+        if (!raw) return;
+
+        let state;
+        try {
+          state = JSON.parse(raw);
+        } catch {
+          return;
+        }
+
+        if (!state || typeof state !== "object") return;
+
+        if (Array.isArray(state)) {
+          state = Object.fromEntries(state.map((p) => [p, true]));
+        }
+
+        document.querySelectorAll(".folder-details").forEach((el) => {
+          if (el.hasAttribute("open")) return;
+          const path = el.getAttribute("data-folder-path");
+          if (!path) return;
+          if (state[path] === true) {
+            el.setAttribute("open", "");
+          }
+        });
+      })();
+    </script>
+  )
+}
+
+<script>
+  const STORAGE_KEY = "nooniwa:folder-tree";
+
+  function loadFolderState() {
+    const savedState = sessionStorage.getItem(STORAGE_KEY);
+    if (!savedState) return {};
+
+    try {
+      const parsed = JSON.parse(savedState);
+      if (Array.isArray(parsed)) {
+        return parsed.reduce(
+          (acc: Record<string, boolean>, path: string) => {
+            acc[path] = true;
+            return acc;
+          },
+          {} as Record<string, boolean>,
+        );
+      }
+      if (parsed && typeof parsed === "object") return parsed;
+    } catch {
+      return {};
+    }
+
+    return {};
+  }
+
+  function saveFolderState(state: Record<string, boolean>) {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function initFolderTreeEvents() {
+    document.querySelectorAll(".folder-details").forEach((details) => {
+      if ((details as HTMLElement).dataset.listenerAttached) return;
+      (details as HTMLElement).dataset.listenerAttached = "true";
+
+      details.addEventListener("toggle", () => {
+        const folderPath = details.getAttribute("data-folder-path");
+        if (!folderPath) return;
+
+        const state = loadFolderState();
+        state[folderPath] = (details as HTMLDetailsElement).open;
+        saveFolderState(state);
+      });
+    });
+  }
+
+  function persistOpenFolders() {
+    const state = loadFolderState();
+
+    document.querySelectorAll(".folder-details[open]").forEach((details) => {
+      const folderPath = details.getAttribute("data-folder-path");
+      if (!folderPath) return;
+      state[folderPath] = true;
+    });
+
+    saveFolderState(state);
+  }
+
+  initFolderTreeEvents();
+  persistOpenFolders();
+</script>

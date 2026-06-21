@@ -8,6 +8,7 @@ export function ComponentConfigSchema() {
   const defaults = {
     Page: path("Page"),
     PageFrame: path("PageFrame"),
+    PageLeft: path("PageLeft"),
     PageMain: path("PageMain"),
     PageBody: path("PageBody"),
     PageBeforeBody: path("PageBeforeBody"),
@@ -15,6 +16,7 @@ export function ComponentConfigSchema() {
     PageTitle: path("PageTitle"),
     PageMetadata: path("PageMetadata"),
     Backlinks: path("Backlinks"),
+    FolderTree: path("FolderTree"),
     Header: path("Header"),
     Footer: path("Footer"),
     SiteTitle: path("SiteTitle"),
@@ -24,6 +26,7 @@ export function ComponentConfigSchema() {
     .object({
       Page: z.string().default(defaults.Page),
       PageFrame: z.string().default(defaults.PageFrame),
+      PageLeft: z.string().default(defaults.PageLeft),
       PageMain: z.string().default(defaults.PageMain),
       PageBody: z.string().default(defaults.PageBody),
       PageBeforeBody: z.string().default(defaults.PageBeforeBody),
@@ -31,6 +34,7 @@ export function ComponentConfigSchema() {
       PageTitle: z.string().default(defaults.PageTitle),
       PageMetadata: z.string().default(defaults.PageMetadata),
       Backlinks: z.string().default(defaults.Backlinks),
+      FolderTree: z.string().default(defaults.FolderTree),
       Header: z.string().default(defaults.Header),
       Footer: z.string().default(defaults.Footer),
       SiteTitle: z.string().default(defaults.SiteTitle),

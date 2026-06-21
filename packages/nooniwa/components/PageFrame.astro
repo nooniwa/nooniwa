@@ -1,12 +1,24 @@
 ---
 import Header from "virtual:nooniwa/components/Header";
 import Footer from "virtual:nooniwa/components/Footer";
+import PageLeft from "virtual:nooniwa/components/PageLeft";
+import type { TreeNode } from "../utils/folder-tree";
+
+interface Props {
+  currentPath: string;
+  folderTree: TreeNode[];
+}
+
+const { currentPath, folderTree } = Astro.props as Props;
 ---
 
 <Header />
+
 <div
-  class="page-frame mx-auto grid min-h-svh max-w-352 grid-cols-[minmax(0,1fr)] print:block print:min-h-0 print:max-w-none"
+  class="page-frame mx-auto grid min-h-svh max-w-352 grid-cols-[minmax(0,1fr)] md:grid-cols-[--spacing(80)_minmax(0,1fr)] print:block print:min-h-0 print:max-w-none"
 >
+  <PageLeft currentPath={currentPath} folderTree={folderTree} />
+
   <div class="flex flex-col">
     <div class="h-14 print:hidden"></div>
     <slot />

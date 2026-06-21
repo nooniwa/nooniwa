@@ -1,0 +1,51 @@
+---
+import FolderTree from "virtual:nooniwa/components/FolderTree";
+import type { TreeNode } from "../utils/folder-tree";
+
+interface Props {
+  currentPath: string;
+  folderTree: TreeNode[];
+}
+
+const { currentPath, folderTree } = Astro.props as Props;
+---
+
+<aside
+  id="site-menu"
+  class="page-left fixed top-14 left-0 z-50 flex h-[calc(100svh-(--spacing(14)))] w-full flex-col overflow-hidden bg-(--color-background) md:sticky md:left-auto md:z-auto md:w-auto md:border-r md:border-(--color-border) print:hidden"
+>
+  <nav aria-label="Folder tree" class="flex-1 overflow-y-auto px-2 pt-6 pb-8">
+    <FolderTree nodes={folderTree} currentPath={currentPath} />
+  </nav>
+</aside>
+
+<style is:global>
+  .page-left nav {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overscroll-behavior: contain;
+  }
+  .page-left nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .page-left {
+    transition: transform 0.2s ease-in-out;
+  }
+
+  @media (width < 48rem) {
+    .page-left {
+      transform: translateY(-100%);
+      transition-duration: 0.35s;
+    }
+    html[data-sidebar-left="open"] .page-left {
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page-left {
+      transition: none;
+    }
+  }
+</style>

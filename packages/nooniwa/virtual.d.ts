@@ -15,9 +15,19 @@ declare module "virtual:nooniwa/components/PageFrame" {
   export default PageFrame;
 }
 
+declare module "virtual:nooniwa/components/PageLeft" {
+  const PageLeft: typeof import("./components/PageLeft.astro").default;
+  export default PageLeft;
+}
+
 declare module "virtual:nooniwa/components/PageMain" {
   const PageMain: typeof import("./components/PageMain.astro").default;
   export default PageMain;
+}
+
+declare module "virtual:nooniwa/components/FolderTree" {
+  const FolderTree: typeof import("./components/FolderTree.astro").default;
+  export default FolderTree;
 }
 
 declare module "virtual:nooniwa/components/PageBody" {

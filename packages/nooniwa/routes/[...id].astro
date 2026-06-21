@@ -5,6 +5,8 @@ import Page from "virtual:nooniwa/components/Page";
 import { buildPageUrlMapFromEntries } from "../utils/resolution-map";
 import { buildPageLinks } from "../utils/page-links";
 import { buildBacklinksMap, getBacklinksForPage } from "../utils/backlinks";
+import { buildFolderTree } from "../utils/folder-tree";
+import { slugToUrl } from "../utils/slug";
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages");
@@ -12,15 +14,21 @@ export async function getStaticPaths() {
   const { pageUrlMap, publishedSlugs } = buildPageUrlMapFromEntries(pages);
   const pageLinks = buildPageLinks(pages, pageUrlMap, publishedSlugs);
   const backlinksMap = buildBacklinksMap(pageLinks);
+  const folderTree = buildFolderTree(pages);
 
   return pages.map((page) => ({
     params: { id: page.id === "index" ? undefined : page.id },
-    props: { page, backlinks: getBacklinksForPage(page.id, backlinksMap) },
+    props: {
+      page,
+      backlinks: getBacklinksForPage(page.id, backlinksMap),
+      folderTree,
+      currentPath: slugToUrl(page.id),
+    },
   }));
 }
 const { siteTitle, siteDescription } = config;
 
-const { page, backlinks } = Astro.props;
+const { page, backlinks, folderTree, currentPath } = Astro.props;
 const { Content } = await render(page);
 
 const title =
@@ -40,6 +48,8 @@ const { created, updated, tags } = page.data;
   updated={updated}
   tags={tags}
   backlinks={backlinks}
+  folderTree={folderTree}
+  currentPath={currentPath}
 >
   <Content />
 </Page>

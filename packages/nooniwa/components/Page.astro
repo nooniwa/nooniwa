@@ -9,6 +9,7 @@ import PageBeforeBody from "virtual:nooniwa/components/PageBeforeBody";
 import PageBody from "virtual:nooniwa/components/PageBody";
 import PageAfterBody from "virtual:nooniwa/components/PageAfterBody";
 import type { BacklinkEntry } from "../utils/backlinks";
+import type { TreeNode } from "../utils/folder-tree";
 
 interface Props {
   title: string;
@@ -17,6 +18,8 @@ interface Props {
   updated?: Date | undefined;
   tags?: string[] | undefined;
   backlinks: BacklinkEntry[];
+  currentPath: string;
+  folderTree: TreeNode[];
 }
 
 const {
@@ -26,6 +29,8 @@ const {
   updated,
   tags = [],
   backlinks,
+  currentPath,
+  folderTree,
 } = Astro.props;
 
 const { siteTitle } = config;
@@ -63,7 +68,7 @@ const headTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
     class="min-h-svh bg-(--color-background) text-(--color-foreground) print:min-h-0"
   >
     <SkipLink />
-    <PageFrame>
+    <PageFrame currentPath={currentPath} folderTree={folderTree}>
       <PageMain>
         <article data-pagefind-body>
           <PageBeforeBody
@@ -76,6 +81,7 @@ const headTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
             <slot />
           </PageBody>
         </article>
+
         <PageAfterBody backlinks={backlinks} />
       </PageMain>
     </PageFrame>
