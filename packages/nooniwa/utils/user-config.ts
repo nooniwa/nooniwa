@@ -1,6 +1,7 @@
 import { z } from "astro/zod";
 import { ComponentConfigSchema } from "../schemas/components";
 import { CopyrightSchema } from "../schemas/copyright";
+import { SocialSchema } from "../schemas/social";
 
 export const OptionsSchema = z.strictObject({
   siteTitle: z.string(),
@@ -8,6 +9,7 @@ export const OptionsSchema = z.strictObject({
   lang: z.string().default("en"),
   styles: z.string().min(1),
   copyright: CopyrightSchema(),
+  social: SocialSchema(),
   credits: z.boolean().default(true),
   components: ComponentConfigSchema(),
 });

@@ -26,6 +26,8 @@ export function ComponentConfigSchema() {
     Header: path("Header"),
     Footer: path("Footer"),
     SiteTitle: path("SiteTitle"),
+    SocialIcons: path("SocialIcons"),
+    ThemeToggle: path("ThemeToggle"),
     SkipLink: path("SkipLink"),
   };
   return z
@@ -50,6 +52,8 @@ export function ComponentConfigSchema() {
       Header: z.string().default(defaults.Header),
       Footer: z.string().default(defaults.Footer),
       SiteTitle: z.string().default(defaults.SiteTitle),
+      SocialIcons: z.string().default(defaults.SocialIcons),
+      ThemeToggle: z.string().default(defaults.ThemeToggle),
       SkipLink: z.string().default(defaults.SkipLink),
     })
     .default(defaults);

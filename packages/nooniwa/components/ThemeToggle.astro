@@ -1,0 +1,97 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<div
+  class="theme-toggle relative inline-flex cursor-pointer items-center rounded-sm border border-(--color-border)"
+>
+  <span
+    class="theme-icon pointer-events-none absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2 text-(--color-foreground-muted)"
+  >
+    <span class="theme-icon-svg absolute inset-0" data-show-for="auto">
+      <Icon name="sun-moon" class="h-4 w-4" />
+    </span>
+    <span class="theme-icon-svg absolute inset-0 hidden" data-show-for="light">
+      <Icon name="sun" class="h-4 w-4" />
+    </span>
+    <span class="theme-icon-svg absolute inset-0 hidden" data-show-for="dark">
+      <Icon name="moon" class="h-4 w-4" />
+    </span>
+  </span>
+
+  <select
+    class="theme-select cursor-pointer appearance-none border-0 bg-transparent py-1 pr-7 pl-8 text-sm text-(--color-foreground)"
+    aria-label="Theme"
+  >
+    <option value="auto">Auto</option>
+    <option value="light">Light</option>
+    <option value="dark">Dark</option>
+  </select>
+
+  <span
+    class="pointer-events-none absolute top-1/2 right-2 h-3 w-3 -translate-y-1/2 text-(--color-foreground-muted)"
+  >
+    <Icon name="chevron-down" class="h-3 w-3" aria-hidden="true" />
+  </span>
+</div>
+
+<script>
+  type ThemeSetting = "auto" | "light" | "dark";
+
+  function getStored(): ThemeSetting {
+    const raw = localStorage.getItem("nooniwa:color-theme");
+    if (raw === "auto" || raw === "light" || raw === "dark") return raw;
+    return "auto";
+  }
+
+  function resolveEffective(setting: ThemeSetting): "light" | "dark" {
+    if (setting === "auto") {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+    return setting;
+  }
+
+  function applyTheme(setting: ThemeSetting) {
+    const effective = resolveEffective(setting);
+    document.documentElement.classList.toggle("dark", effective === "dark");
+    document.documentElement.dataset.theme = effective;
+  }
+
+  function updateIcons(setting: ThemeSetting) {
+    document.querySelectorAll(".theme-icon-svg").forEach((node) => {
+      const el = node as HTMLElement;
+      el.classList.toggle("hidden", el.dataset.showFor !== setting);
+    });
+  }
+
+  function initThemeSelect() {
+    const selects = document.querySelectorAll(".theme-select");
+    if (selects.length === 0) return;
+
+    const current = getStored();
+    selects.forEach((node) => {
+      const sel = node as HTMLSelectElement;
+      sel.value = current;
+      sel.addEventListener("change", () => {
+        const next = sel.value as ThemeSetting;
+        localStorage.setItem("nooniwa:color-theme", next);
+        applyTheme(next);
+        updateIcons(next);
+        selects.forEach((other) => {
+          const o = other as HTMLSelectElement;
+          if (o !== sel) o.value = next;
+        });
+      });
+    });
+    updateIcons(current);
+
+    const mql = window.matchMedia("(prefers-color-scheme: dark)");
+    mql.addEventListener("change", () => {
+      if (getStored() === "auto") applyTheme("auto");
+    });
+  }
+
+  initThemeSelect();
+</script>

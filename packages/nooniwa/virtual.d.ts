@@ -105,6 +105,16 @@ declare module "virtual:nooniwa/components/SiteTitle" {
   export default SiteTitle;
 }
 
+declare module "virtual:nooniwa/components/SocialIcons" {
+  const SocialIcons: typeof import("./components/SocialIcons.astro").default;
+  export default SocialIcons;
+}
+
+declare module "virtual:nooniwa/components/ThemeToggle" {
+  const ThemeToggle: typeof import("./components/ThemeToggle.astro").default;
+  export default ThemeToggle;
+}
+
 declare module "virtual:nooniwa/components/SkipLink" {
   const SkipLink: typeof import("./components/SkipLink.astro").default;
   export default SkipLink;

@@ -1,5 +1,7 @@
 ---
 import SiteTitle from "virtual:nooniwa/components/SiteTitle";
+import SocialIcons from "virtual:nooniwa/components/SocialIcons";
+import ThemeToggle from "virtual:nooniwa/components/ThemeToggle";
 import Icon from "./Icon.astro";
 ---
 
@@ -9,6 +11,11 @@ import Icon from "./Icon.astro";
   <div class="mx-auto flex h-full max-w-352 items-center gap-3 px-4">
     <div class="min-w-0 flex-1">
       <SiteTitle />
+    </div>
+
+    <div class="hidden shrink-0 items-center gap-4 md:flex print:hidden">
+      <SocialIcons />
+      <ThemeToggle />
     </div>
 
     <button
