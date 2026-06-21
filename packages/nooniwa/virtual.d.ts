@@ -110,6 +110,11 @@ declare module "virtual:nooniwa/components/SiteTitle" {
   export default SiteTitle;
 }
 
+declare module "virtual:nooniwa/components/Search" {
+  const Search: typeof import("./components/Search.astro").default;
+  export default Search;
+}
+
 declare module "virtual:nooniwa/components/SocialIcons" {
   const SocialIcons: typeof import("./components/SocialIcons.astro").default;
   export default SocialIcons;

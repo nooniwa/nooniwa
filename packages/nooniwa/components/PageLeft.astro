@@ -1,5 +1,7 @@
 ---
+import config from "virtual:nooniwa/config";
 import FolderTree from "virtual:nooniwa/components/FolderTree";
+import Search from "virtual:nooniwa/components/Search";
 import SocialIcons from "virtual:nooniwa/components/SocialIcons";
 import ThemeToggle from "virtual:nooniwa/components/ThemeToggle";
 import type { TreeNode } from "../utils/folder-tree";
@@ -16,7 +18,18 @@ const { currentPath, folderTree } = Astro.props as Props;
   id="site-menu"
   class="page-left fixed top-14 left-0 z-50 flex h-[calc(100svh-(--spacing(14)))] w-full flex-col overflow-hidden bg-(--color-background) md:sticky md:left-auto md:z-auto md:w-auto md:border-r md:border-(--color-border) print:hidden"
 >
-  <nav aria-label="Folder tree" class="flex-1 overflow-y-auto px-2 pt-6 pb-8">
+  {
+    config.search && (
+      <div class="pt-4">
+        <Search />
+      </div>
+    )
+  }
+
+  <nav
+    aria-label="Folder tree"
+    class:list={["flex-1 overflow-y-auto px-2 pb-8", !config.search && "pt-6"]}
+  >
     <FolderTree nodes={folderTree} currentPath={currentPath} />
   </nav>
 

@@ -32,6 +32,20 @@ describe("OptionsSchema (defaults)", () => {
     if (!result.success) return;
     expect(result.data.lang).toBe("en");
     expect(result.data.credits).toBe(true);
+    expect(result.data.search).toBe(true);
+  });
+
+  test("accepts search set to false", () => {
+    const result = OptionsSchema.safeParse({ ...minimal, search: false });
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.search).toBe(false);
+  });
+
+  test("rejects when search is not a boolean", () => {
+    expect(OptionsSchema.safeParse({ ...minimal, search: "yes" }).success).toBe(
+      false,
+    );
   });
 });
 

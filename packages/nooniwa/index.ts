@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { AstroIntegration } from "astro";
 import { AstroError } from "astro/errors";
+import * as pagefind from "pagefind";
 import { vitePluginUserConfig } from "./integrations/vite-plugins";
 import { buildContentMaps } from "./utils/content-scanner";
 import { remarkNooniwa } from "./plugins/remark/index";
@@ -79,6 +80,52 @@ export default function nooniwa(options: NooniwaUserConfig): AstroIntegration {
           pattern: "/_nooniwa/site-data.json",
           entrypoint: "nooniwa/routes/site-data.json.ts",
         });
+      },
+      "astro:build:done": async ({ dir, logger: astroLogger }) => {
+        const logger = astroLogger.fork("nooniwa/pagefind");
+
+        if (!parsed.search) {
+          logger.info("Search disabled, skipping index build");
+          return;
+        }
+
+        try {
+          const now = performance.now();
+          logger.info("Building search index...");
+
+          const { index, errors: createErrors } = await pagefind.createIndex();
+          if (createErrors.length > 0) {
+            for (const error of createErrors) logger.error(error);
+            throw new Error("Failed to create Pagefind index.");
+          }
+
+          const { page_count, errors: addErrors } = await index!.addDirectory({
+            path: fileURLToPath(dir),
+          });
+          if (addErrors.length > 0) {
+            for (const error of addErrors) logger.error(error);
+            throw new Error("Failed to add directory to Pagefind index.");
+          }
+
+          logger.info(`Indexed ${page_count} pages`);
+
+          const { errors: writeErrors } = await index!.writeFiles({
+            outputPath: fileURLToPath(new URL("./pagefind/", dir)),
+          });
+          if (writeErrors.length > 0) {
+            for (const error of writeErrors) logger.error(error);
+            throw new Error("Failed to write Pagefind files.");
+          }
+
+          const elapsed = performance.now() - now;
+          logger.info(
+            `Search index built in ${elapsed < 750 ? `${Math.round(elapsed)}ms` : `${(elapsed / 1000).toFixed(2)}s`}`,
+          );
+        } catch (cause) {
+          throw new Error("Failed to build search index.", { cause });
+        } finally {
+          await pagefind.close();
+        }
       },
     },
   };

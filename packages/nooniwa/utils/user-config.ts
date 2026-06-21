@@ -12,6 +12,7 @@ export const OptionsSchema = z.strictObject({
   social: SocialSchema(),
   credits: z.boolean().default(true),
   components: ComponentConfigSchema(),
+  search: z.boolean().default(true),
 });
 
 export type NooniwaConfig = z.infer<typeof OptionsSchema>;
