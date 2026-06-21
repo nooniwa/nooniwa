@@ -72,6 +72,12 @@ const headTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
         document.documentElement.dataset.theme = effective;
       })();
     </script>
+
+    <script is:inline>
+      if (Number(sessionStorage.getItem("nooniwa:sidebar-scroll")) > 0) {
+        document.documentElement.dataset.sidebarRestore = "";
+      }
+    </script>
   </head>
   <body
     class="min-h-svh bg-(--color-background) text-(--color-foreground) print:min-h-0"
@@ -112,6 +118,7 @@ const headTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
 
     <script>
       import { initCalloutFold } from "../scripts/callout";
+      import { initSidebarScrollPersist } from "../scripts/sidebar-scroll";
       import { initPagePreview } from "../scripts/page-preview";
       import { initFootnotePopover } from "../scripts/footnote-popover";
       import { initHeadingAnchors } from "../scripts/heading-anchors";
@@ -124,6 +131,9 @@ const headTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
       initPagePreview();
       initFootnotePopover();
       initHashHighlight();
+      initSidebarScrollPersist();
+
+      document.documentElement.removeAttribute("data-sidebar-restore");
     </script>
   </body>
 </html>

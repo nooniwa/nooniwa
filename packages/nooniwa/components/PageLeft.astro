@@ -33,6 +33,15 @@ const { currentPath, folderTree } = Astro.props as Props;
     <FolderTree nodes={folderTree} currentPath={currentPath} />
   </nav>
 
+  <script is:inline>
+    (function () {
+      var nav = document.querySelector(".page-left nav");
+      var n = Number(sessionStorage.getItem("nooniwa:sidebar-scroll"));
+      if (nav && Number.isFinite(n) && n > 0) nav.scrollTop = n;
+      document.documentElement.removeAttribute("data-sidebar-restore");
+    })();
+  </script>
+
   <div
     class="flex shrink-0 items-center justify-center gap-4 border-t border-(--color-border) px-4 py-3 md:hidden print:hidden"
   >
@@ -49,6 +58,10 @@ const { currentPath, folderTree } = Astro.props as Props;
   }
   .page-left nav::-webkit-scrollbar {
     display: none;
+  }
+
+  html[data-sidebar-restore] .page-left nav {
+    visibility: hidden;
   }
 
   .page-left {
