@@ -13,6 +13,9 @@ export const OptionsSchema = z.strictObject({
   credits: z.boolean().default(true),
   components: ComponentConfigSchema(),
   search: z.boolean().default(true),
+  rss: z.boolean().default(true),
+  sitemap: z.boolean().default(true),
+  robots: z.boolean().default(true),
 });
 
 export type NooniwaConfig = z.infer<typeof OptionsSchema>;

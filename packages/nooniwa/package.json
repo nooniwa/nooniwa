@@ -18,6 +18,8 @@
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.2.0",
+    "@astrojs/rss": "^4.0.18",
+    "@astrojs/sitemap": "^3.7.3",
     "d3-force": "^3.0.0",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",

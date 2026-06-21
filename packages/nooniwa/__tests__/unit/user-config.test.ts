@@ -33,6 +33,9 @@ describe("OptionsSchema (defaults)", () => {
     expect(result.data.lang).toBe("en");
     expect(result.data.credits).toBe(true);
     expect(result.data.search).toBe(true);
+    expect(result.data.rss).toBe(true);
+    expect(result.data.sitemap).toBe(true);
+    expect(result.data.robots).toBe(true);
   });
 
   test("accepts search set to false", () => {
@@ -40,6 +43,20 @@ describe("OptionsSchema (defaults)", () => {
     expect(result.success).toBe(true);
     if (!result.success) return;
     expect(result.data.search).toBe(false);
+  });
+
+  test("accepts rss/sitemap/robots opted out", () => {
+    const result = OptionsSchema.safeParse({
+      ...minimal,
+      rss: false,
+      sitemap: false,
+      robots: false,
+    });
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.rss).toBe(false);
+    expect(result.data.sitemap).toBe(false);
+    expect(result.data.robots).toBe(false);
   });
 
   test("rejects when search is not a boolean", () => {

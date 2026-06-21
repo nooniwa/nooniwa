@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { AstroIntegration } from "astro";
 import { AstroError } from "astro/errors";
+import sitemap from "@astrojs/sitemap";
 import * as pagefind from "pagefind";
 import { vitePluginUserConfig } from "./integrations/vite-plugins";
 import { buildContentMaps } from "./utils/content-scanner";
@@ -29,6 +30,12 @@ export default function nooniwa(options: NooniwaUserConfig): AstroIntegration {
     name: "nooniwa",
     hooks: {
       "astro:config:setup": ({ injectRoute, updateConfig, config, logger }) => {
+        if (!config.site && (parsed.rss || parsed.sitemap || parsed.robots)) {
+          logger.warn(
+            "`site` is not set in astro.config. RSS, sitemap and robots.txt will be skipped. Set `site` to enable them.",
+          );
+        }
+
         const rootPath = fileURLToPath(config.root);
         const userStylesPath = resolve(rootPath, parsed.styles);
 
@@ -80,6 +87,29 @@ export default function nooniwa(options: NooniwaUserConfig): AstroIntegration {
           pattern: "/_nooniwa/site-data.json",
           entrypoint: "nooniwa/routes/site-data.json.ts",
         });
+
+        if (parsed.rss && config.site) {
+          injectRoute({
+            pattern: "/rss.xml",
+            entrypoint: "nooniwa/routes/rss.xml.ts",
+          });
+        }
+        if (parsed.robots && config.site) {
+          injectRoute({
+            pattern: "/robots.txt",
+            entrypoint: "nooniwa/routes/robots.txt.ts",
+          });
+        }
+
+        if (
+          parsed.sitemap &&
+          config.site &&
+          !config.integrations.find((i) => i.name === "@astrojs/sitemap")
+        ) {
+          updateConfig({
+            integrations: [sitemap({ lastmod: new Date() })],
+          });
+        }
       },
       "astro:build:done": async ({ dir, logger: astroLogger }) => {
         const logger = astroLogger.fork("nooniwa/pagefind");
