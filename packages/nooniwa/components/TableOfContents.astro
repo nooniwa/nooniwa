@@ -1,0 +1,213 @@
+---
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+
+const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 4);
+---
+
+{
+  tocHeadings.length > 0 && (
+    <nav aria-label="Table of contents" class="toc">
+      <h3 class="mb-3 text-xs font-semibold tracking-wider text-(--color-foreground) uppercase">
+        On this page
+      </h3>
+      <ul class="toc-list text-sm">
+        {tocHeadings.map((heading) => {
+          const lineCount = heading.depth - 2;
+          return (
+            <li>
+              <a
+                href={`#${heading.slug}`}
+                data-toc-link={heading.slug}
+                class:list={[
+                  "toc-link",
+                  lineCount === 0 ? "toc-link-root" : "",
+                ]}
+              >
+                {lineCount > 0 && (
+                  <span class="toc-guides" aria-hidden="true">
+                    {Array.from({ length: lineCount }, (_, i) => (
+                      <span
+                        class:list={[
+                          "toc-guide",
+                          i === lineCount - 1 ? "toc-guide-inner" : undefined,
+                        ]}
+                      />
+                    ))}
+                  </span>
+                )}
+                <span
+                  class:list={[
+                    "toc-text truncate transition-colors",
+                    "text-(--color-foreground-muted)",
+                  ]}
+                >
+                  {heading.text}
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  )
+}
+
+<style>
+  .toc-list {
+    --toc-guide-width: 1rem;
+    --toc-label-gap: 0.35rem;
+    --toc-row-padding-y: 0.25rem;
+    --toc-row-padding-right: 0.5rem;
+    --toc-spacer-width: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .toc-link {
+    display: flex;
+    min-width: 0;
+    align-items: stretch;
+    text-decoration: none;
+  }
+
+  .toc-link-root .toc-text {
+    padding-left: 0;
+  }
+
+  .toc-guides {
+    display: flex;
+    flex: 0 0 auto;
+    align-self: stretch;
+  }
+
+  .toc-guide {
+    position: relative;
+    width: var(--toc-guide-width);
+    min-width: var(--toc-guide-width);
+    flex: 0 0 var(--toc-guide-width);
+    align-self: stretch;
+  }
+
+  .toc-guide::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    transform: translateX(-50%);
+    background-color: --alpha(var(--color-foreground) / 12%);
+  }
+
+  .toc-text {
+    min-width: 0;
+    padding-top: var(--toc-row-padding-y);
+    padding-right: var(--toc-row-padding-right);
+    padding-bottom: var(--toc-row-padding-y);
+    padding-left: var(--toc-label-gap);
+  }
+
+  .toc-link:hover .toc-text {
+    color: var(--color-foreground);
+  }
+
+  .toc-link:hover .toc-guide-inner::before {
+    background-color: --alpha(var(--color-foreground) / 45%) !important;
+  }
+
+  .toc-link.active .toc-text,
+  .toc-link.active:hover .toc-text {
+    color: var(--color-accent) !important;
+    font-weight: 600;
+  }
+
+  .toc-link.active .toc-guide-inner::before,
+  .toc-link.active:hover .toc-guide-inner::before {
+    background-color: var(--color-accent) !important;
+  }
+</style>
+
+<script>
+  function initTocHighlight() {
+    const tocLinks =
+      document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]");
+    if (tocLinks.length === 0) return;
+
+    const headings: { element: HTMLElement; slug: string }[] = [];
+    tocLinks.forEach((link) => {
+      const slug = link.dataset.tocLink;
+      if (slug) {
+        const heading = document.getElementById(slug);
+        if (heading) headings.push({ element: heading, slug });
+      }
+    });
+
+    if (headings.length === 0) return;
+
+    function updateActiveHeading() {
+      const scrollPaddingTop =
+        parseFloat(
+          getComputedStyle(document.documentElement).scrollPaddingTop,
+        ) || 56;
+      const firstHeading = headings[0];
+      const headingScrollMargin = firstHeading
+        ? parseFloat(getComputedStyle(firstHeading.element).scrollMarginTop) ||
+          0
+        : 0;
+      const activeLineOffset = scrollPaddingTop + headingScrollMargin + 4;
+
+      let activeSlug: string | null = null;
+      for (const { element, slug } of headings) {
+        if (element.getBoundingClientRect().top <= activeLineOffset) {
+          activeSlug = slug;
+        }
+      }
+
+      tocLinks.forEach((link) => {
+        if (link.dataset.tocLink === activeSlug) {
+          link.classList.add("active");
+        } else {
+          link.classList.remove("active");
+        }
+      });
+    }
+
+    let ticking = false;
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          updateActiveHeading();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    updateActiveHeading();
+  }
+
+  function initTocCloseDrawer() {
+    const tocLinks =
+      document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]");
+    tocLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        window.dispatchEvent(
+          new CustomEvent("request-sidebar-close", {
+            detail: { side: "right" },
+          }),
+        );
+      });
+    });
+  }
+
+  initTocHighlight();
+  initTocCloseDrawer();
+</script>

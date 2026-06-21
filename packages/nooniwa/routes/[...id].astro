@@ -29,7 +29,7 @@ export async function getStaticPaths() {
 const { siteTitle, siteDescription } = config;
 
 const { page, backlinks, folderTree, currentPath } = Astro.props;
-const { Content } = await render(page);
+const { Content, headings } = await render(page);
 
 const title =
   page.id === "index"
@@ -50,6 +50,7 @@ const { created, updated, tags } = page.data;
   backlinks={backlinks}
   folderTree={folderTree}
   currentPath={currentPath}
+  headings={headings}
 >
   <Content />
 </Page>

@@ -1,0 +1,49 @@
+---
+import TableOfContents from "virtual:nooniwa/components/TableOfContents";
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings = [] } = Astro.props as Props;
+---
+
+<aside
+  class="page-right fixed top-14 right-0 z-50 flex h-[calc(100svh-(--spacing(14)))] w-80 max-w-full flex-col overflow-y-auto border-l border-(--color-border) bg-(--color-background) lg:sticky lg:right-auto lg:z-auto lg:w-auto print:hidden"
+>
+  <div class="space-y-8 p-6 pt-12 lg:pt-6">
+    {headings.length > 0 && <TableOfContents headings={headings} />}
+  </div>
+</aside>
+
+<style is:global>
+  .page-right {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overscroll-behavior: contain;
+  }
+  .page-right::-webkit-scrollbar {
+    display: none;
+  }
+
+  .page-right {
+    transition: transform 0.2s ease-in-out;
+  }
+
+  @media (width < 64rem) {
+    .page-right {
+      transform: translateX(100%);
+      overscroll-behavior: none;
+    }
+    html[data-sidebar-right="open"] .page-right {
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page-right {
+      transition: none;
+    }
+  }
+</style>
