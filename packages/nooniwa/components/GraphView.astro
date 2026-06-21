@@ -1,0 +1,120 @@
+---
+import type { GraphNode, GraphLink } from "../utils/graph";
+import Icon from "./Icon.astro";
+
+interface Props {
+  localNodes: GraphNode[];
+  localLinks: GraphLink[];
+  hasFullGraph?: boolean;
+  currentPath: string;
+}
+
+const {
+  localNodes,
+  localLinks,
+  hasFullGraph = false,
+  currentPath,
+} = Astro.props;
+
+const localGraphJson = JSON.stringify({
+  nodes: localNodes,
+  links: localLinks,
+  currentPath,
+});
+---
+
+<div>
+  <div class="mb-3 flex items-center justify-between">
+    <h3
+      class="text-xs font-semibold tracking-wider text-(--color-foreground) uppercase"
+    >
+      Interactive Graph
+    </h3>
+    <div class="flex items-center gap-1">
+      {
+        hasFullGraph && (
+          <button
+            id="graph-global-button"
+            class="cursor-pointer p-1 text-(--color-foreground-muted) transition-colors hover:text-(--color-foreground)"
+            title="Open global graph"
+            aria-label="Open global graph"
+          >
+            <Icon name="git-fork" class="h-4 w-4" />
+          </button>
+        )
+      }
+      <button
+        id="graph-expand-button"
+        class="cursor-pointer p-1 text-(--color-foreground-muted) transition-colors hover:text-(--color-foreground)"
+        title="Expand local graph"
+        aria-label="Expand local graph"
+      >
+        <Icon name="arrow-up-right" class="h-4 w-4" />
+      </button>
+    </div>
+  </div>
+  <div
+    class="graph-container relative aspect-square overflow-hidden rounded-lg border border-(--color-border)"
+    data-local-graph={localGraphJson}
+  >
+    <canvas id="graph-canvas" class="block h-full w-full"></canvas>
+  </div>
+</div>
+
+<script>
+  import type { SerializedGraph } from "../utils/graph";
+
+  const SIDEBAR_GRAPH_ID = "sidebar-graph";
+  const GRAPH_VIEW_INITIALIZED_KEY = "__graphViewInitialized__";
+
+  async function initGraph() {
+    const container = document.querySelector<HTMLElement>(".graph-container");
+    const canvas = document.getElementById("graph-canvas") as HTMLCanvasElement;
+    if (!container || !canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    const dataAttr = container.dataset.localGraph;
+    if (!dataAttr) return;
+
+    const { nodes, links, currentPath } = JSON.parse(
+      dataAttr,
+    ) as SerializedGraph;
+
+    const { renderGraph } = await import("../scripts/graph-renderer");
+
+    renderGraph({
+      instanceId: SIDEBAR_GRAPH_ID,
+      canvas,
+      container,
+      nodes,
+      links,
+      currentPath,
+      isGlobal: false,
+    });
+  }
+
+  const win = window as unknown as Record<string, unknown>;
+  if (!win[GRAPH_VIEW_INITIALIZED_KEY]) {
+    win[GRAPH_VIEW_INITIALIZED_KEY] = true;
+    window.addEventListener("graph-modal-closed", initGraph);
+    window.addEventListener("sidebar-right-opened", initGraph);
+  }
+
+  const container = document.querySelector<HTMLElement>(".graph-container");
+  if (container) {
+    const observer = new IntersectionObserver((entries, obs) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          obs.disconnect();
+          void initGraph();
+          break;
+        }
+      }
+    });
+    observer.observe(container);
+  }
+</script>

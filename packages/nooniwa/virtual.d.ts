@@ -40,6 +40,11 @@ declare module "virtual:nooniwa/components/TableOfContents" {
   export default TableOfContents;
 }
 
+declare module "virtual:nooniwa/components/GraphView" {
+  const GraphView: typeof import("./components/GraphView.astro").default;
+  export default GraphView;
+}
+
 declare module "virtual:nooniwa/components/PageBody" {
   const PageBody: typeof import("./components/PageBody.astro").default;
   export default PageBody;

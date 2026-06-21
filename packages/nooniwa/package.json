@@ -18,10 +18,16 @@
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.2.0",
+    "d3-force": "^3.0.0",
+    "d3-selection": "^3.0.0",
+    "d3-zoom": "^3.0.0",
     "github-slugger": "^2.0.0",
     "unist-util-visit": "^5.1.0"
   },
   "devDependencies": {
+    "@types/d3-force": "^3.0.10",
+    "@types/d3-selection": "^3.0.11",
+    "@types/d3-zoom": "^3.0.8",
     "@types/hast": "^3.0.4",
     "@types/mdast": "^4.0.4",
     "@types/node": "^25.5.0",

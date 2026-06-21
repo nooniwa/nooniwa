@@ -1,18 +1,37 @@
 ---
+import GraphView from "virtual:nooniwa/components/GraphView";
 import TableOfContents from "virtual:nooniwa/components/TableOfContents";
 import type { MarkdownHeading } from "astro";
+import type { GraphNode, GraphLink } from "../utils/graph";
 
 interface Props {
   headings: MarkdownHeading[];
+  graphNodes: GraphNode[];
+  graphLinks: GraphLink[];
+  hasFullGraph: boolean;
+  currentPath: string;
 }
 
-const { headings = [] } = Astro.props as Props;
+const {
+  headings = [],
+  graphNodes = [],
+  graphLinks = [],
+  hasFullGraph = false,
+  currentPath = "",
+} = Astro.props as Props;
 ---
 
 <aside
   class="page-right fixed top-14 right-0 z-50 flex h-[calc(100svh-(--spacing(14)))] w-80 max-w-full flex-col overflow-y-auto border-l border-(--color-border) bg-(--color-background) lg:sticky lg:right-auto lg:z-auto lg:w-auto print:hidden"
 >
   <div class="space-y-8 p-6 pt-12 lg:pt-6">
+    <GraphView
+      localNodes={graphNodes}
+      localLinks={graphLinks}
+      hasFullGraph={hasFullGraph}
+      currentPath={currentPath}
+    />
+
     {headings.length > 0 && <TableOfContents headings={headings} />}
   </div>
 </aside>

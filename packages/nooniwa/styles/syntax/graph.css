@@ -1,0 +1,11 @@
+.graph-container {
+  background-color: var(--color-background);
+}
+
+.graph-modal canvas {
+  cursor: grab;
+}
+
+.graph-modal canvas:active {
+  cursor: grabbing;
+}

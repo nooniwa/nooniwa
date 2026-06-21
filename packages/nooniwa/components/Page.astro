@@ -11,6 +11,7 @@ import PageAfterBody from "virtual:nooniwa/components/PageAfterBody";
 import type { MarkdownHeading } from "astro";
 import type { BacklinkEntry } from "../utils/backlinks";
 import type { TreeNode } from "../utils/folder-tree";
+import type { GraphNode, GraphLink } from "../utils/graph";
 
 interface Props {
   title: string;
@@ -22,6 +23,8 @@ interface Props {
   currentPath: string;
   folderTree: TreeNode[];
   headings: MarkdownHeading[];
+  localGraph: { nodes: GraphNode[]; links: GraphLink[] };
+  hasFullGraph: boolean;
 }
 
 const {
@@ -34,6 +37,8 @@ const {
   currentPath,
   folderTree,
   headings,
+  localGraph,
+  hasFullGraph,
 } = Astro.props;
 
 const { siteTitle } = config;
@@ -75,6 +80,8 @@ const headTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
       currentPath={currentPath}
       folderTree={folderTree}
       headings={headings}
+      localGraph={localGraph}
+      hasFullGraph={hasFullGraph}
     >
       <PageMain>
         <article data-pagefind-body>

@@ -5,14 +5,18 @@ import PageLeft from "virtual:nooniwa/components/PageLeft";
 import PageRight from "virtual:nooniwa/components/PageRight";
 import type { MarkdownHeading } from "astro";
 import type { TreeNode } from "../utils/folder-tree";
+import type { GraphNode, GraphLink } from "../utils/graph";
 
 interface Props {
   currentPath: string;
   folderTree: TreeNode[];
   headings: MarkdownHeading[];
+  localGraph: { nodes: GraphNode[]; links: GraphLink[] };
+  hasFullGraph: boolean;
 }
 
-const { currentPath, folderTree, headings } = Astro.props as Props;
+const { currentPath, folderTree, headings, localGraph, hasFullGraph } =
+  Astro.props as Props;
 ---
 
 <Header />
@@ -28,5 +32,11 @@ const { currentPath, folderTree, headings } = Astro.props as Props;
     <Footer />
   </div>
 
-  <PageRight headings={headings} />
+  <PageRight
+    headings={headings}
+    graphNodes={localGraph.nodes}
+    graphLinks={localGraph.links}
+    hasFullGraph={hasFullGraph}
+    currentPath={currentPath}
+  />
 </div>

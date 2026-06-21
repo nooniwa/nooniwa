@@ -6,6 +6,7 @@ import { buildPageUrlMapFromEntries } from "../utils/resolution-map";
 import { buildPageLinks } from "../utils/page-links";
 import { buildBacklinksMap, getBacklinksForPage } from "../utils/backlinks";
 import { buildFolderTree } from "../utils/folder-tree";
+import { buildGraphData, getLocalGraph } from "../utils/graph";
 import { slugToUrl } from "../utils/slug";
 
 export async function getStaticPaths() {
@@ -15,20 +16,28 @@ export async function getStaticPaths() {
   const pageLinks = buildPageLinks(pages, pageUrlMap, publishedSlugs);
   const backlinksMap = buildBacklinksMap(pageLinks);
   const folderTree = buildFolderTree(pages);
+  const fullGraphData = buildGraphData(pageLinks);
+  const hasFullGraph = fullGraphData.nodes.length > 0;
 
-  return pages.map((page) => ({
-    params: { id: page.id === "index" ? undefined : page.id },
-    props: {
-      page,
-      backlinks: getBacklinksForPage(page.id, backlinksMap),
-      folderTree,
-      currentPath: slugToUrl(page.id),
-    },
-  }));
+  return pages.map((page) => {
+    const currentPath = slugToUrl(page.id);
+    return {
+      params: { id: page.id === "index" ? undefined : page.id },
+      props: {
+        page,
+        backlinks: getBacklinksForPage(page.id, backlinksMap),
+        folderTree,
+        currentPath,
+        localGraph: getLocalGraph(fullGraphData, currentPath, 1),
+        hasFullGraph,
+      },
+    };
+  });
 }
 const { siteTitle, siteDescription } = config;
 
-const { page, backlinks, folderTree, currentPath } = Astro.props;
+const { page, backlinks, folderTree, currentPath, localGraph, hasFullGraph } =
+  Astro.props;
 const { Content, headings } = await render(page);
 
 const title =
@@ -51,6 +60,8 @@ const { created, updated, tags } = page.data;
   folderTree={folderTree}
   currentPath={currentPath}
   headings={headings}
+  localGraph={localGraph}
+  hasFullGraph={hasFullGraph}
 >
   <Content />
 </Page>
