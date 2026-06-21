@@ -1,0 +1,48 @@
+---
+import { getCollection, getEntry, render } from "astro:content";
+
+import Page from "virtual:nooniwa/components/Page";
+import { getLocalGraph } from "../utils/graph";
+import { getSiteData } from "../utils/site-data";
+import { buildFolderTree } from "../utils/folder-tree";
+import { isListablePage } from "../utils/pages";
+
+const pages = await getCollection("pages", isListablePage);
+const { fullGraphData } = await getSiteData();
+const folderTree = buildFolderTree(pages);
+
+const currentPath = "/404";
+const localGraph = getLocalGraph(fullGraphData, currentPath, 1);
+
+const entry = await getEntry("pages", "404");
+const customEntry = entry?.data.publish ? entry : undefined;
+const Content = customEntry ? (await render(customEntry)).Content : null;
+
+const title = customEntry?.data.title ?? "404 - Not Found";
+const description =
+  customEntry?.data.description ?? "This page does not exist.";
+---
+
+<Page
+  title={title}
+  description={description}
+  headings={[]}
+  currentPath={currentPath}
+  folderTree={folderTree}
+  localGraph={localGraph}
+  hasFullGraph={fullGraphData.nodes.length > 0}
+  backlinks={[]}
+>
+  {
+    Content ? (
+      <Content />
+    ) : (
+      <>
+        <p>This page does not exist.</p>
+        <p>
+          <a href="/">Back to Home</a>
+        </p>
+      </>
+    )
+  }
+</Page>
