@@ -35,6 +35,16 @@ declare module "virtual:nooniwa/components/PageMetadata" {
   export default PageMetadata;
 }
 
+declare module "virtual:nooniwa/components/PageAfterBody" {
+  const PageAfterBody: typeof import("./components/PageAfterBody.astro").default;
+  export default PageAfterBody;
+}
+
+declare module "virtual:nooniwa/components/Backlinks" {
+  const Backlinks: typeof import("./components/Backlinks.astro").default;
+  export default Backlinks;
+}
+
 declare module "virtual:nooniwa/components/SkipLink" {
   const SkipLink: typeof import("./components/SkipLink.astro").default;
   export default SkipLink;

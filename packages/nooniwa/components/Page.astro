@@ -6,6 +6,8 @@ import SkipLink from "virtual:nooniwa/components/SkipLink";
 import PageMain from "virtual:nooniwa/components/PageMain";
 import PageBeforeBody from "virtual:nooniwa/components/PageBeforeBody";
 import PageBody from "virtual:nooniwa/components/PageBody";
+import PageAfterBody from "virtual:nooniwa/components/PageAfterBody";
+import type { BacklinkEntry } from "../utils/backlinks";
 
 interface Props {
   title: string;
@@ -13,9 +15,17 @@ interface Props {
   created?: Date | undefined;
   updated?: Date | undefined;
   tags?: string[] | undefined;
+  backlinks: BacklinkEntry[];
 }
 
-const { title, description, created, updated, tags = [] } = Astro.props;
+const {
+  title,
+  description,
+  created,
+  updated,
+  tags = [],
+  backlinks,
+} = Astro.props;
 
 const { siteTitle } = config;
 
@@ -64,6 +74,7 @@ const headTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
           <slot />
         </PageBody>
       </article>
+      <PageAfterBody backlinks={backlinks} />
     </PageMain>
 
     <style is:global>

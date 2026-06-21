@@ -1,0 +1,26 @@
+---
+import type { BacklinkEntry } from "../utils/backlinks";
+
+interface Props {
+  backlinks: BacklinkEntry[];
+}
+
+const { backlinks } = Astro.props;
+---
+
+{
+  backlinks.length > 0 && (
+    <nav aria-label="Backlinks" class="backlinks">
+      <h2 class="backlinks-heading">Links to this page</h2>
+      <ul class="backlinks-list">
+        {backlinks.map((link) => (
+          <li>
+            <a href={link.url} class="backlinks-link">
+              {link.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}

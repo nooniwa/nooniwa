@@ -10,8 +10,10 @@ export function ComponentConfigSchema() {
     PageMain: path("PageMain"),
     PageBody: path("PageBody"),
     PageBeforeBody: path("PageBeforeBody"),
+    PageAfterBody: path("PageAfterBody"),
     PageTitle: path("PageTitle"),
     PageMetadata: path("PageMetadata"),
+    Backlinks: path("Backlinks"),
     SkipLink: path("SkipLink"),
   };
   return z
@@ -20,8 +22,10 @@ export function ComponentConfigSchema() {
       PageMain: z.string().default(defaults.PageMain),
       PageBody: z.string().default(defaults.PageBody),
       PageBeforeBody: z.string().default(defaults.PageBeforeBody),
+      PageAfterBody: z.string().default(defaults.PageAfterBody),
       PageTitle: z.string().default(defaults.PageTitle),
       PageMetadata: z.string().default(defaults.PageMetadata),
+      Backlinks: z.string().default(defaults.Backlinks),
       SkipLink: z.string().default(defaults.SkipLink),
     })
     .default(defaults);

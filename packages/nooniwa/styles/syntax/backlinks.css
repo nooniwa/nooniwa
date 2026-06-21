@@ -1,0 +1,40 @@
+.backlinks {
+  margin-top: 3rem;
+  border-top: 1px solid var(--color-border);
+  padding-top: 1.5rem;
+}
+
+.backlinks .backlinks-heading {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-foreground);
+}
+
+.backlinks .backlinks-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.backlinks .backlinks-list li {
+  margin: 0;
+  padding: 0;
+}
+
+.backlinks .backlinks-link {
+  font-size: 0.875rem;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.backlinks .backlinks-link:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}

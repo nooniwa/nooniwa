@@ -2,17 +2,25 @@
 import { getCollection, render } from "astro:content";
 import config from "virtual:nooniwa/config";
 import Page from "virtual:nooniwa/components/Page";
+import { buildPageUrlMapFromEntries } from "../utils/resolution-map";
+import { buildPageLinks } from "../utils/page-links";
+import { buildBacklinksMap, getBacklinksForPage } from "../utils/backlinks";
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages");
+
+  const { pageUrlMap, publishedSlugs } = buildPageUrlMapFromEntries(pages);
+  const pageLinks = buildPageLinks(pages, pageUrlMap, publishedSlugs);
+  const backlinksMap = buildBacklinksMap(pageLinks);
+
   return pages.map((page) => ({
     params: { id: page.id === "index" ? undefined : page.id },
-    props: { page },
+    props: { page, backlinks: getBacklinksForPage(page.id, backlinksMap) },
   }));
 }
 const { siteTitle, siteDescription } = config;
 
-const { page } = Astro.props;
+const { page, backlinks } = Astro.props;
 const { Content } = await render(page);
 
 const title =
@@ -31,6 +39,7 @@ const { created, updated, tags } = page.data;
   created={created}
   updated={updated}
   tags={tags}
+  backlinks={backlinks}
 >
   <Content />
 </Page>

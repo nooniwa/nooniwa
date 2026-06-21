@@ -1,0 +1,12 @@
+---
+import Backlinks from "virtual:nooniwa/components/Backlinks";
+import type { BacklinkEntry } from "../utils/backlinks";
+
+interface Props {
+  backlinks: BacklinkEntry[];
+}
+
+const { backlinks } = Astro.props;
+---
+
+<Backlinks backlinks={backlinks} />
