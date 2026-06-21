@@ -1,0 +1,259 @@
+---
+import type { GraphNode, GraphLink } from "../utils/graph";
+import Icon from "./Icon.astro";
+
+interface Props {
+  localNodes: GraphNode[];
+  localLinks: GraphLink[];
+  currentPath: string;
+}
+
+const { localNodes, localLinks, currentPath } = Astro.props;
+
+const localGraphJson = JSON.stringify({
+  nodes: localNodes,
+  links: localLinks,
+  currentPath,
+});
+---
+
+<div
+  id="graph-modal"
+  class="graph-modal invisible fixed inset-0 z-110 flex items-center justify-center opacity-0 transition-all duration-200 print:hidden [&.visible]:visible [&.visible]:opacity-100"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Graph view"
+  aria-hidden="true"
+  data-local-graph={localGraphJson}
+>
+  <div
+    id="graph-modal-backdrop"
+    class="absolute inset-0 bg-black/50 dark:bg-black/60"
+  >
+  </div>
+  <div
+    class="relative h-[85vh] w-[90vw] max-w-300 overflow-hidden rounded-xl border border-(--color-border) bg-(--color-background) shadow-2xl"
+  >
+    <button
+      id="graph-modal-close"
+      class="absolute top-3 right-3 z-10 cursor-pointer rounded-sm border-0 p-1.5 text-(--color-foreground-muted) transition-colors hover:text-(--color-foreground)"
+      aria-label="Close"
+    >
+      <Icon name="x" class="h-5 w-5" />
+    </button>
+    <div id="graph-modal-canvas-container" class="relative h-full w-full">
+      <canvas id="graph-modal-canvas" class="block h-full w-full"></canvas>
+      <p
+        id="graph-modal-error"
+        class="absolute inset-0 m-auto hidden h-fit text-center text-sm text-(--color-foreground-muted)"
+        role="alert"
+      >
+        Failed to load graph
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // graph-renderer (with d3) is dynamically imported on first open.
+  import type { SerializedGraph } from "../utils/graph";
+  import { createFocusTrap } from "../scripts/focus-trap";
+  import { loadSiteData } from "../scripts/site-data";
+  import { setScrollLock } from "../scripts/scroll-lock";
+
+  type RendererModule = typeof import("../scripts/graph-renderer");
+
+  let rendererModule: RendererModule | null = null;
+  async function ensureRenderer(): Promise<RendererModule> {
+    if (!rendererModule) {
+      rendererModule = await import("../scripts/graph-renderer");
+    }
+    return rendererModule;
+  }
+
+  const MODAL_GRAPH_ID = "modal-graph";
+
+  const modalState = {
+    pendingRender: null as number | null,
+    backdrop: null as Element | null,
+    handlers: null as {
+      handleExpandClick: () => void;
+      handleGlobalClick: () => void;
+      handleCloseClick: () => void;
+      handleBackdropClick: (e: Event) => void;
+      handleKeydown: (e: KeyboardEvent) => void;
+    } | null,
+  };
+
+  function initGraphModal() {
+    const expandBtn = document.getElementById("graph-expand-button");
+    const globalBtn = document.getElementById("graph-global-button");
+    const modal = document.getElementById("graph-modal");
+    const closeBtn = document.getElementById("graph-modal-close");
+    const backdrop = document.getElementById("graph-modal-backdrop");
+    const canvas = document.getElementById(
+      "graph-modal-canvas",
+    ) as HTMLCanvasElement;
+
+    if (!modal || !canvas) return;
+
+    const modalEl = modal;
+
+    // Focus management (focus in, background inert, restore). Shared with TagModal.
+    const focusTrap = createFocusTrap(modalEl);
+
+    if (modalState.handlers) {
+      expandBtn?.removeEventListener(
+        "click",
+        modalState.handlers.handleExpandClick,
+      );
+      globalBtn?.removeEventListener(
+        "click",
+        modalState.handlers.handleGlobalClick,
+      );
+      closeBtn?.removeEventListener(
+        "click",
+        modalState.handlers.handleCloseClick,
+      );
+      modalState.backdrop?.removeEventListener(
+        "click",
+        modalState.handlers.handleBackdropClick,
+      );
+      document.removeEventListener(
+        "keydown",
+        modalState.handlers.handleKeydown,
+      );
+    }
+
+    function clearCanvas() {
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    // trigger is the button to restore focus to on close.
+    async function openModal(
+      mode: "global" | "local",
+      trigger: HTMLElement | null,
+    ) {
+      if (modalState.pendingRender !== null) {
+        cancelAnimationFrame(modalState.pendingRender);
+        modalState.pendingRender = null;
+      }
+
+      const renderer = await ensureRenderer();
+
+      renderer.cleanupAllGraphInstances();
+      clearCanvas();
+
+      modalEl.classList.add("visible");
+      modalEl.setAttribute("aria-hidden", "false");
+      setScrollLock("graph-modal", true);
+
+      focusTrap.activate(trigger);
+
+      modalState.pendingRender = requestAnimationFrame(() => {
+        modalState.pendingRender = null;
+        void renderModalGraph(mode, renderer);
+      });
+    }
+
+    function closeModal() {
+      if (modalState.pendingRender !== null) {
+        cancelAnimationFrame(modalState.pendingRender);
+        modalState.pendingRender = null;
+      }
+
+      rendererModule?.cleanupAllGraphInstances();
+      clearCanvas();
+
+      modalEl.classList.remove("visible");
+      modalEl.setAttribute("aria-hidden", "true");
+      setScrollLock("graph-modal", false);
+
+      focusTrap.deactivate();
+
+      // Tell the sidebar GraphView to re-render.
+      window.dispatchEvent(new CustomEvent("graph-modal-closed"));
+    }
+
+    // local uses the embedded blob; global fetches the full graph from site-data.
+    async function renderModalGraph(
+      mode: "global" | "local",
+      renderer: RendererModule,
+    ) {
+      const wrapper = document.getElementById(
+        "graph-modal-canvas-container",
+      ) as HTMLElement;
+      const errorEl = document.getElementById("graph-modal-error");
+      if (!wrapper || !canvas) return;
+
+      const localAttr = modalEl.dataset.localGraph;
+      const local = localAttr
+        ? (JSON.parse(localAttr) as SerializedGraph)
+        : null;
+      const currentPath = local?.currentPath ?? "";
+
+      let nodes: SerializedGraph["nodes"];
+      let links: SerializedGraph["links"];
+      if (mode === "global") {
+        try {
+          const { graph } = await loadSiteData();
+          nodes = graph.nodes;
+          links = graph.links;
+        } catch {
+          errorEl?.classList.remove("hidden");
+          return;
+        }
+      } else {
+        if (!local) return;
+        nodes = local.nodes;
+        links = local.links;
+      }
+      errorEl?.classList.add("hidden");
+
+      renderer.renderGraph({
+        instanceId: MODAL_GRAPH_ID,
+        canvas,
+        container: wrapper,
+        nodes,
+        links,
+        currentPath,
+        isGlobal: mode === "global",
+        onNavigate: (path) => {
+          closeModal();
+          window.location.href = path;
+        },
+      });
+    }
+
+    modalState.handlers = {
+      handleExpandClick: () => void openModal("local", expandBtn ?? null),
+      handleGlobalClick: () => void openModal("global", globalBtn ?? null),
+      handleCloseClick: () => closeModal(),
+      handleBackdropClick: (e: Event) => {
+        e.preventDefault();
+        closeModal();
+      },
+      handleKeydown: (e: KeyboardEvent) => {
+        if (e.key === "Escape" && modalEl.classList.contains("visible")) {
+          closeModal();
+        }
+      },
+    };
+
+    expandBtn?.addEventListener("click", modalState.handlers.handleExpandClick);
+    globalBtn?.addEventListener("click", modalState.handlers.handleGlobalClick);
+    closeBtn?.addEventListener("click", modalState.handlers.handleCloseClick);
+    backdrop?.addEventListener(
+      "click",
+      modalState.handlers.handleBackdropClick,
+    );
+    document.addEventListener("keydown", modalState.handlers.handleKeydown);
+
+    modalState.backdrop = backdrop ?? null;
+  }
+
+  initGraphModal();
+</script>

@@ -8,6 +8,7 @@ import PageMain from "virtual:nooniwa/components/PageMain";
 import PageBeforeBody from "virtual:nooniwa/components/PageBeforeBody";
 import PageBody from "virtual:nooniwa/components/PageBody";
 import PageAfterBody from "virtual:nooniwa/components/PageAfterBody";
+import PageOverlays from "virtual:nooniwa/components/PageOverlays";
 import type { MarkdownHeading } from "astro";
 import type { BacklinkEntry } from "../utils/backlinks";
 import type { TreeNode } from "../utils/folder-tree";
@@ -99,6 +100,8 @@ const headTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
         <PageAfterBody backlinks={backlinks} />
       </PageMain>
     </PageFrame>
+
+    <PageOverlays localGraph={localGraph} currentPath={currentPath} />
 
     <style is:global>
       html {

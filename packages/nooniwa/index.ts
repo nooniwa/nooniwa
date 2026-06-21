@@ -74,6 +74,11 @@ export default function nooniwa(options: NooniwaUserConfig): AstroIntegration {
           pattern: "/[...id]",
           entrypoint: "nooniwa/routes/[...id].astro",
         });
+
+        injectRoute({
+          pattern: "/_nooniwa/site-data.json",
+          entrypoint: "nooniwa/routes/site-data.json.ts",
+        });
       },
     },
   };

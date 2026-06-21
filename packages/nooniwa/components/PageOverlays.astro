@@ -1,0 +1,20 @@
+---
+import GraphModal from "virtual:nooniwa/components/GraphModal";
+import TagModal from "virtual:nooniwa/components/TagModal";
+import type { GraphNode, GraphLink } from "../utils/graph";
+
+interface Props {
+  localGraph: { nodes: GraphNode[]; links: GraphLink[] };
+  currentPath: string;
+}
+
+const { localGraph, currentPath } = Astro.props;
+---
+
+<GraphModal
+  localNodes={localGraph.nodes}
+  localLinks={localGraph.links}
+  currentPath={currentPath}
+/>
+
+<TagModal />

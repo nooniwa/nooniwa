@@ -1,0 +1,42 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<div
+  id="tag-modal"
+  class="not-prose invisible fixed inset-0 z-110 flex items-center justify-center opacity-0 transition-all duration-200 print:hidden [&.visible]:visible [&.visible]:opacity-100"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="tag-modal-title"
+  aria-hidden="true"
+>
+  <div
+    id="tag-modal-backdrop"
+    class="absolute inset-0 bg-black/50 dark:bg-black/60"
+  >
+  </div>
+  <div
+    class="relative flex max-h-[80vh] w-[90vw] max-w-md flex-col overflow-hidden rounded-xl border border-(--color-border) bg-(--color-background) shadow-2xl"
+  >
+    <button
+      id="tag-modal-close"
+      class="absolute top-3 right-3 z-10 cursor-pointer rounded-sm border-0 p-1.5 text-(--color-foreground-muted) transition-colors hover:text-(--color-foreground)"
+      aria-label="Close"
+    >
+      <Icon name="x" class="h-5 w-5" />
+    </button>
+    <h2
+      id="tag-modal-title"
+      class="shrink-0 pt-6 pr-14 pb-4 pl-6 text-lg font-semibold text-(--color-foreground)"
+    >
+      Pages with tag <span id="tag-modal-tag"></span>
+    </h2>
+    <ol id="tag-modal-pages" class="tag-modal-pages"></ol>
+  </div>
+</div>
+
+<script>
+  import { initTagModal } from "../scripts/tag-modal";
+
+  initTagModal();
+</script>

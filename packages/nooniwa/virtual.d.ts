@@ -45,6 +45,21 @@ declare module "virtual:nooniwa/components/GraphView" {
   export default GraphView;
 }
 
+declare module "virtual:nooniwa/components/GraphModal" {
+  const GraphModal: typeof import("./components/GraphModal.astro").default;
+  export default GraphModal;
+}
+
+declare module "virtual:nooniwa/components/TagModal" {
+  const TagModal: typeof import("./components/TagModal.astro").default;
+  export default TagModal;
+}
+
+declare module "virtual:nooniwa/components/PageOverlays" {
+  const PageOverlays: typeof import("./components/PageOverlays.astro").default;
+  export default PageOverlays;
+}
+
 declare module "virtual:nooniwa/components/PageBody" {
   const PageBody: typeof import("./components/PageBody.astro").default;
   export default PageBody;
