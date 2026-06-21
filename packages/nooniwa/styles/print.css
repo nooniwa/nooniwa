@@ -1,0 +1,46 @@
+@media print {
+  :root,
+  .dark {
+    --color-background: var(--color-print-background);
+    --color-background-muted: var(--color-print-background-muted);
+    --color-foreground: var(--color-print-foreground);
+    --color-foreground-strong: var(--color-print-foreground-strong);
+    --color-foreground-muted: var(--color-print-foreground-muted);
+    --color-border: var(--color-print-border);
+    --color-highlight: var(--color-print-highlight);
+
+    --color-accent: var(--color-print-accent);
+    --color-accent-hover: var(--color-print-accent);
+    --color-accent-muted: --alpha(var(--color-print-accent) / 70%);
+
+    color-scheme: light;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    break-after: avoid;
+  }
+
+  p,
+  li {
+    orphans: 2;
+    widows: 2;
+  }
+
+  pre {
+    white-space: pre-wrap;
+    overflow-x: hidden;
+    break-inside: avoid;
+  }
+
+  figure,
+  blockquote,
+  .callout,
+  table {
+    break-inside: avoid;
+  }
+}

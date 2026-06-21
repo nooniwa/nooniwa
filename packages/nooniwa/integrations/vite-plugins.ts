@@ -24,6 +24,9 @@ export function vitePluginUserConfig(options: PluginOptions): VitePlugin[] {
   const indexStylesPath = fileURLToPath(
     new URL("../styles/index.css", import.meta.url),
   );
+  const printStylesPath = fileURLToPath(
+    new URL("../styles/print.css", import.meta.url),
+  );
 
   const { config, userStylesPath, componentPaths } = options;
 
@@ -65,6 +68,7 @@ export function vitePluginUserConfig(options: PluginOptions): VitePlugin[] {
           `@source "${packagePath}**/*.astro";`,
           `@import "${indexStylesPath}";`,
           userStyles,
+          `@import "${printStylesPath}";`,
         ].join("\n");
       },
     },
