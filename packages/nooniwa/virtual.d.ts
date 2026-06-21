@@ -45,9 +45,19 @@ declare module "virtual:nooniwa/components/Backlinks" {
   export default Backlinks;
 }
 
+declare module "virtual:nooniwa/components/Header" {
+  const Header: typeof import("./components/Header.astro").default;
+  export default Header;
+}
+
 declare module "virtual:nooniwa/components/Footer" {
   const Footer: typeof import("./components/Footer.astro").default;
   export default Footer;
+}
+
+declare module "virtual:nooniwa/components/SiteTitle" {
+  const SiteTitle: typeof import("./components/SiteTitle.astro").default;
+  export default SiteTitle;
 }
 
 declare module "virtual:nooniwa/components/SkipLink" {

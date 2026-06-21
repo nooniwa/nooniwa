@@ -1,0 +1,12 @@
+---
+import config from "virtual:nooniwa/config";
+
+const { siteTitle } = config;
+---
+
+<a
+  href="/"
+  class="inline-flex max-w-full min-w-0 items-center gap-2 text-lg font-semibold text-(--color-foreground)"
+>
+  <span class="truncate">{siteTitle}</span>
+</a>

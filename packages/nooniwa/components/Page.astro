@@ -3,6 +3,7 @@ import config from "virtual:nooniwa/config";
 import "virtual:nooniwa/styles";
 
 import SkipLink from "virtual:nooniwa/components/SkipLink";
+import Header from "virtual:nooniwa/components/Header";
 import PageMain from "virtual:nooniwa/components/PageMain";
 import PageBeforeBody from "virtual:nooniwa/components/PageBeforeBody";
 import PageBody from "virtual:nooniwa/components/PageBody";
@@ -63,6 +64,8 @@ const headTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
     class="min-h-svh bg-(--color-background) text-(--color-foreground) print:min-h-0"
   >
     <SkipLink />
+    <Header />
+    <div class="h-14"></div>
     <PageMain>
       <article data-pagefind-body>
         <PageBeforeBody
