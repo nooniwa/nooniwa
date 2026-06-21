@@ -1,5 +1,6 @@
 ---
 title: nooniwa
+publish: true
 ---
 
 ## nooniwa

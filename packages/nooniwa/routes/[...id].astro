@@ -7,12 +7,14 @@ import { buildPageLinks } from "../utils/page-links";
 import { buildBacklinksMap, getBacklinksForPage } from "../utils/backlinks";
 import { buildFolderTree } from "../utils/folder-tree";
 import { buildGraphData, getLocalGraph } from "../utils/graph";
+import { isListablePage } from "../utils/pages";
 import { slugToUrl } from "../utils/slug";
 
 export async function getStaticPaths() {
-  const pages = await getCollection("pages");
+  const allPages = await getCollection("pages");
+  const pages = allPages.filter(isListablePage);
 
-  const { pageUrlMap, publishedSlugs } = buildPageUrlMapFromEntries(pages);
+  const { pageUrlMap, publishedSlugs } = buildPageUrlMapFromEntries(allPages);
   const pageLinks = buildPageLinks(pages, pageUrlMap, publishedSlugs);
   const backlinksMap = buildBacklinksMap(pageLinks);
   const folderTree = buildFolderTree(pages);
