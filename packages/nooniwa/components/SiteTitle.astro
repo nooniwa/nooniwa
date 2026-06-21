@@ -1,12 +1,95 @@
 ---
+import { Image } from "astro:assets";
 import config from "virtual:nooniwa/config";
 
-const { siteTitle } = config;
+const { siteTitle, logo } = config;
+
+const localImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/**/*.{png,jpg,jpeg,gif,webp,avif}",
+  { eager: true },
+);
+
+function resolveLocalImage(src: string): ImageMetadata | undefined {
+  let key = src;
+  if (key.startsWith("./")) key = key.slice(1);
+  if (!key.startsWith("/src/")) return undefined;
+  return localImages[key]?.default;
+}
+
+const singleSrc =
+  logo && "src" in logo ? resolveLocalImage(logo.src) : undefined;
+const lightSrc =
+  logo && "light" in logo ? resolveLocalImage(logo.light) : undefined;
+const darkSrc =
+  logo && "dark" in logo ? resolveLocalImage(logo.dark) : undefined;
 ---
 
 <a
   href="/"
   class="inline-flex max-w-full min-w-0 items-center gap-2 text-lg font-semibold text-(--color-foreground)"
 >
-  <span class="truncate">{siteTitle}</span>
+  {
+    logo &&
+      "src" in logo &&
+      (singleSrc ? (
+        <Image
+          src={singleSrc}
+          alt={logo.alt}
+          class="h-6 w-auto max-w-full object-contain"
+          loading="eager"
+          decoding="async"
+        />
+      ) : (
+        <img
+          src={logo.src}
+          alt={logo.alt}
+          class="h-6 w-auto max-w-full object-contain"
+          loading="eager"
+          decoding="async"
+        />
+      ))
+  }
+  {
+    logo && "dark" in logo && (
+      <>
+        {lightSrc ? (
+          <Image
+            src={lightSrc}
+            alt={logo.alt}
+            class="h-6 w-auto max-w-full object-contain dark:hidden"
+            loading="eager"
+            decoding="async"
+          />
+        ) : (
+          <img
+            src={logo.light}
+            alt={logo.alt}
+            class="h-6 w-auto max-w-full object-contain dark:hidden"
+            loading="eager"
+            decoding="async"
+          />
+        )}
+        {darkSrc ? (
+          <Image
+            src={darkSrc}
+            alt={logo.alt}
+            class="hidden h-6 w-auto max-w-full object-contain dark:block"
+            loading="eager"
+            decoding="async"
+          />
+        ) : (
+          <img
+            src={logo.dark}
+            alt={logo.alt}
+            class="hidden h-6 w-auto max-w-full object-contain dark:block"
+            loading="eager"
+            decoding="async"
+          />
+        )}
+      </>
+    )
+  }
+  <span class:list={["truncate", { "sr-only": logo?.replacesTitle }]}
+    >{siteTitle}</span
+  >
 </a>

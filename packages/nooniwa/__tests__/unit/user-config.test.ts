@@ -36,6 +36,9 @@ describe("OptionsSchema (defaults)", () => {
     expect(result.data.rss).toBe(true);
     expect(result.data.sitemap).toBe(true);
     expect(result.data.robots).toBe(true);
+    expect(result.data.favicon).toEqual({});
+    expect(result.data.logo).toBeUndefined();
+    expect(result.data.ogImage).toBeUndefined();
   });
 
   test("accepts search set to false", () => {
@@ -70,6 +73,34 @@ describe("OptionsSchema (strict / unknown keys)", () => {
   test("rejects an unknown top-level key (typo detection)", () => {
     const result = OptionsSchema.safeParse({ ...minimal, siteTtile: "typo" });
     expect(result.success).toBe(false);
+  });
+});
+
+describe("OptionsSchema (site assets)", () => {
+  test("accepts a partial favicon (only the given slots)", () => {
+    const result = OptionsSchema.safeParse({
+      ...minimal,
+      favicon: { svg: "/icon.svg" },
+    });
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.favicon).toEqual({ svg: "/icon.svg" });
+  });
+
+  test("accepts a single-image logo ({ src })", () => {
+    expect(
+      OptionsSchema.safeParse({ ...minimal, logo: { src: "/logo.svg" } })
+        .success,
+    ).toBe(true);
+  });
+
+  test("accepts a dark/light logo ({ dark, light })", () => {
+    expect(
+      OptionsSchema.safeParse({
+        ...minimal,
+        logo: { dark: "/dark.svg", light: "/light.svg" },
+      }).success,
+    ).toBe(true);
   });
 });
 

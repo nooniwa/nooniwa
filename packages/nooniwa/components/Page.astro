@@ -42,9 +42,12 @@ const {
   hasFullGraph,
 } = Astro.props;
 
-const { siteTitle } = config;
+const { siteTitle, favicon, ogImage } = config;
 
 const headTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
+
+const ogImageUrl =
+  ogImage && Astro.site ? new URL(ogImage.src, Astro.site).href : undefined;
 ---
 
 <!doctype html>
@@ -54,6 +57,27 @@ const headTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{headTitle}</title>
     {description && <meta name="description" content={description} />}
+
+    {favicon.ico && <link rel="icon" href={favicon.ico} sizes="32x32" />}
+    {favicon.svg && <link rel="icon" href={favicon.svg} type="image/svg+xml" />}
+    {
+      favicon.appleTouchIcon && (
+        <link
+          rel="apple-touch-icon"
+          href={favicon.appleTouchIcon}
+          sizes="180x180"
+        />
+      )
+    }
+
+    {
+      ogImage && ogImageUrl && (
+        <>
+          <meta property="og:image" content={ogImageUrl} />
+          <meta property="og:image:alt" content={ogImage.alt} />
+        </>
+      )
+    }
 
     <script is:inline>
       (function () {

@@ -1,6 +1,9 @@
 import { z } from "astro/zod";
 import { ComponentConfigSchema } from "../schemas/components";
 import { CopyrightSchema } from "../schemas/copyright";
+import { FaviconSchema } from "../schemas/favicon";
+import { LogoSchema } from "../schemas/logo";
+import { OgImageSchema } from "../schemas/og-image";
 import { SocialSchema } from "../schemas/social";
 
 export const OptionsSchema = z.strictObject({
@@ -10,6 +13,9 @@ export const OptionsSchema = z.strictObject({
   styles: z.string().min(1),
   copyright: CopyrightSchema(),
   social: SocialSchema(),
+  favicon: FaviconSchema(),
+  logo: LogoSchema(),
+  ogImage: OgImageSchema(),
   credits: z.boolean().default(true),
   components: ComponentConfigSchema(),
   search: z.boolean().default(true),
