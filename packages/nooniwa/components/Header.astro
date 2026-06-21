@@ -1,5 +1,6 @@
 ---
 import SiteTitle from "virtual:nooniwa/components/SiteTitle";
+import Icon from "./Icon.astro";
 ---
 
 <header
@@ -9,5 +10,43 @@ import SiteTitle from "virtual:nooniwa/components/SiteTitle";
     <div class="min-w-0 flex-1">
       <SiteTitle />
     </div>
+
+    <button
+      data-sidebar-toggle="left"
+      type="button"
+      class="site-menu-toggle relative -mr-2 flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-sm text-(--color-foreground-muted) hover:text-(--color-foreground) md:hidden print:hidden"
+      aria-label="Toggle site menu"
+      aria-expanded="false"
+      aria-controls="site-menu"
+    >
+      <Icon name="menu" class="site-menu-icon-open h-5 w-5 stroke-[1.5]" />
+      <Icon
+        name="x"
+        class="site-menu-icon-close absolute h-5 w-5 stroke-[1.5]"
+      />
+    </button>
   </div>
 </header>
+
+<style is:global>
+  .site-menu-icon-open,
+  .site-menu-icon-close {
+    transition: opacity 0.2s ease;
+  }
+  .site-menu-icon-close {
+    opacity: 0;
+  }
+  html[data-sidebar-left="open"] .site-menu-icon-open {
+    opacity: 0;
+  }
+  html[data-sidebar-left="open"] .site-menu-icon-close {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-menu-icon-open,
+    .site-menu-icon-close {
+      transition: none;
+    }
+  }
+</style>

@@ -3,6 +3,7 @@ import Header from "virtual:nooniwa/components/Header";
 import Footer from "virtual:nooniwa/components/Footer";
 import PageLeft from "virtual:nooniwa/components/PageLeft";
 import PageRight from "virtual:nooniwa/components/PageRight";
+import Icon from "./Icon.astro";
 import type { MarkdownHeading } from "astro";
 import type { TreeNode } from "../utils/folder-tree";
 import type { GraphNode, GraphLink } from "../utils/graph";
@@ -20,6 +21,15 @@ const { currentPath, folderTree, headings, localGraph, hasFullGraph } =
 ---
 
 <Header />
+
+<button
+  data-sidebar-toggle="right"
+  type="button"
+  class="sidebar-rail fixed top-16 right-2 z-60 flex h-9 w-9 cursor-pointer items-center justify-center rounded-sm text-(--color-foreground-muted) hover:text-(--color-foreground) lg:hidden print:hidden"
+  aria-label="Toggle right sidebar"
+>
+  <Icon name="panel-right" class="h-5 w-5 stroke-[1.5]" />
+</button>
 
 <div
   class="page-frame mx-auto grid min-h-svh max-w-352 grid-cols-[minmax(0,1fr)] md:grid-cols-[--spacing(80)_minmax(0,1fr)] lg:grid-cols-[--spacing(80)_minmax(0,1fr)_--spacing(80)] print:block print:min-h-0 print:max-w-none"
@@ -40,3 +50,140 @@ const { currentPath, folderTree, headings, localGraph, hasFullGraph } =
     currentPath={currentPath}
   />
 </div>
+
+<style is:global>
+  @media (width < 48rem) {
+    html[data-sidebar-left="open"] [data-sidebar-toggle="right"] {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { setScrollLock } from "../scripts/scroll-lock";
+
+  type Side = "left" | "right";
+
+  const LEFT_DRAWER_MAX = 767; // < 768px (md)
+  const RIGHT_DRAWER_MAX = 1023; // < 1024px (lg)
+
+  const RIGHT_DOMINANT_MAX = 640;
+
+  function initSidebarToggle() {
+    const root = document.documentElement;
+
+    function attrKey(side: Side): "sidebarLeft" | "sidebarRight" {
+      return side === "left" ? "sidebarLeft" : "sidebarRight";
+    }
+
+    function isOpen(side: Side): boolean {
+      return root.dataset[attrKey(side)] === "open";
+    }
+
+    function open(side: Side) {
+      root.dataset[attrKey(side)] = "open";
+      syncAriaState();
+    }
+
+    function close(side: Side) {
+      delete root.dataset[attrKey(side)];
+      syncAriaState();
+    }
+
+    function syncAriaState() {
+      const buttons = document.querySelectorAll("[data-sidebar-toggle]");
+      buttons.forEach((node) => {
+        const btn = node as HTMLElement;
+        const side = (btn.dataset.sidebarToggle || "left") as Side;
+        const attr = btn.hasAttribute("aria-expanded")
+          ? "aria-expanded"
+          : "aria-pressed";
+        btn.setAttribute(attr, isOpen(side) ? "true" : "false");
+      });
+    }
+
+    function syncBodyScroll() {
+      const leftModalOpen =
+        window.innerWidth <= LEFT_DRAWER_MAX && isOpen("left");
+      setScrollLock("sidebar-left", leftModalOpen);
+    }
+
+    function toggle(side: Side) {
+      if (isOpen(side)) {
+        close(side);
+        syncBodyScroll();
+        return;
+      }
+      open(side);
+      if (window.innerWidth <= LEFT_DRAWER_MAX) {
+        const other: Side = side === "left" ? "right" : "left";
+        if (isOpen(other)) close(other);
+      }
+      if (side === "right") {
+        window.dispatchEvent(new CustomEvent("sidebar-right-opened"));
+      }
+      syncBodyScroll();
+    }
+
+    const toggleButtons = document.querySelectorAll("[data-sidebar-toggle]");
+    toggleButtons.forEach((node) => {
+      const btn = node as HTMLElement;
+      const side = (btn.dataset.sidebarToggle || "left") as Side;
+      btn.addEventListener("click", () => toggle(side));
+    });
+
+    window.addEventListener("request-sidebar-close", (e) => {
+      const detail = (e as CustomEvent<{ side?: Side }>).detail;
+      if (detail?.side !== "right") return;
+      if (window.innerWidth > RIGHT_DOMINANT_MAX || !isOpen("right")) return;
+      close("right");
+      syncBodyScroll();
+    });
+
+    document.addEventListener("click", (e) => {
+      if (window.innerWidth > RIGHT_DRAWER_MAX || !isOpen("right")) return;
+      const target = e.target instanceof Element ? e.target : null;
+      if (
+        !target ||
+        target.closest('.page-right, [data-sidebar-toggle="right"]')
+      )
+        return;
+      close("right");
+      syncBodyScroll();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
+      const w = window.innerWidth;
+      let changed = false;
+      if (w <= LEFT_DRAWER_MAX && isOpen("left")) {
+        close("left");
+        changed = true;
+      }
+      if (w <= RIGHT_DRAWER_MAX && isOpen("right")) {
+        close("right");
+        changed = true;
+      }
+      if (changed) syncBodyScroll();
+    });
+
+    function clearStaleOverride() {
+      let changed = false;
+      if (window.innerWidth > LEFT_DRAWER_MAX && isOpen("left")) {
+        close("left");
+        changed = true;
+      }
+      if (window.innerWidth > RIGHT_DRAWER_MAX && isOpen("right")) {
+        close("right");
+        changed = true;
+      }
+      if (changed) syncBodyScroll();
+    }
+    window.addEventListener("resize", clearStaleOverride);
+
+    syncBodyScroll();
+    syncAriaState();
+  }
+
+  initSidebarToggle();
+</script>
