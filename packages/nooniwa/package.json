@@ -25,7 +25,10 @@
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
     "github-slugger": "^2.0.0",
+    "katex": "^0.17.0",
     "pagefind": "^1.5.2",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
     "unist-util-visit": "^5.1.0"
   },
   "devDependencies": {

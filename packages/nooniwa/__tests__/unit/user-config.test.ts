@@ -157,6 +157,30 @@ describe("OptionsSchema (expressiveCode)", () => {
   });
 });
 
+describe("OptionsSchema (math)", () => {
+  test("defaults to {} and normalizes true to {}", () => {
+    expect(OptionsSchema.safeParse(minimal).data?.math).toEqual({});
+    expect(
+      OptionsSchema.safeParse({ ...minimal, math: true }).data?.math,
+    ).toEqual({});
+  });
+
+  test("keeps false (disabled)", () => {
+    const result = OptionsSchema.safeParse({ ...minimal, math: false });
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.math).toBe(false);
+  });
+
+  test("passes through KaTeX options (macros)", () => {
+    const result = OptionsSchema.safeParse({
+      ...minimal,
+      math: { macros: { "\\R": "\\mathbb{R}" } },
+    });
+    expect(result.success).toBe(true);
+  });
+});
+
 describe("OptionsSchema (social)", () => {
   test("rejects when a social icon is not a registered name", () => {
     const result = OptionsSchema.safeParse({

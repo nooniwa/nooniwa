@@ -5,6 +5,7 @@ import { ExpressiveCodeSchema } from "../schemas/expressive-code";
 import { FaviconSchema } from "../schemas/favicon";
 import { HeadSchema } from "../schemas/head";
 import { LogoSchema } from "../schemas/logo";
+import { MathSchema } from "../schemas/math";
 import { OgImageSchema } from "../schemas/og-image";
 import { SocialSchema } from "../schemas/social";
 
@@ -20,6 +21,7 @@ export const OptionsSchema = z.strictObject({
   ogImage: OgImageSchema(),
   head: HeadSchema(),
   expressiveCode: ExpressiveCodeSchema(),
+  math: MathSchema(),
   credits: z.boolean().default(true),
   components: ComponentConfigSchema(),
   search: z.boolean().default(true),

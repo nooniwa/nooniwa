@@ -13,6 +13,7 @@ import { rehypeExternalLinks } from "./plugins/rehype/external-links";
 import { rehypeInternalLinks } from "./plugins/rehype/internal-links";
 import { OptionsSchema, type NooniwaUserConfig } from "./utils/user-config";
 import { nooniwaExpressiveCode } from "./integrations/expressive-code";
+import { nooniwaMath } from "./plugins/math";
 
 export default function nooniwa(options: NooniwaUserConfig): AstroIntegration {
   const result = OptionsSchema.safeParse(options);
@@ -46,16 +47,24 @@ export default function nooniwa(options: NooniwaUserConfig): AstroIntegration {
           logger,
         );
 
+        const math = parsed.math !== false ? nooniwaMath(parsed.math) : null;
+
         updateConfig({
           markdown: {
             remarkRehype: { footnoteBackContent: "↩︎" },
             remarkPlugins: [
+              ...(math?.remarkPlugins ?? []),
+
               [
                 remarkNooniwa,
                 { pageUrlMap, imageFileMap, publishedSlugs, logger },
               ],
             ],
-            rehypePlugins: [rehypeExternalLinks, rehypeInternalLinks],
+            rehypePlugins: [
+              ...(math?.rehypePlugins ?? []),
+              rehypeExternalLinks,
+              rehypeInternalLinks,
+            ],
           },
         });
 
