@@ -1,0 +1,21 @@
+.expressive-code {
+  margin-block: 1.25em;
+}
+
+.expressive-code .copy .feedback {
+  display: none !important;
+}
+
+.expressive-code .copy:has(.feedback) button::after {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6 9 17l-5-5'/></svg>");
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6 9 17l-5-5'/></svg>");
+  background-color: var(--color-success);
+}
+
+.expressive-code .copy:has(.feedback) button {
+  opacity: 1 !important;
+}
+
+.expressive-code .copy button {
+  transition: none !important;
+}

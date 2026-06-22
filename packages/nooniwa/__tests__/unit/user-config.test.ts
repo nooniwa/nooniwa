@@ -128,6 +128,35 @@ describe("OptionsSchema (head)", () => {
   });
 });
 
+describe("OptionsSchema (expressiveCode)", () => {
+  test("defaults to {} (enabled with the baseline)", () => {
+    const result = OptionsSchema.safeParse(minimal);
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.expressiveCode).toEqual({});
+  });
+
+  test("normalizes true to {}", () => {
+    const result = OptionsSchema.safeParse({
+      ...minimal,
+      expressiveCode: true,
+    });
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.expressiveCode).toEqual({});
+  });
+
+  test("keeps false (disabled)", () => {
+    const result = OptionsSchema.safeParse({
+      ...minimal,
+      expressiveCode: false,
+    });
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.expressiveCode).toBe(false);
+  });
+});
+
 describe("OptionsSchema (social)", () => {
   test("rejects when a social icon is not a registered name", () => {
     const result = OptionsSchema.safeParse({

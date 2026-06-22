@@ -1,6 +1,7 @@
 import { z } from "astro/zod";
 import { ComponentConfigSchema } from "../schemas/components";
 import { CopyrightSchema } from "../schemas/copyright";
+import { ExpressiveCodeSchema } from "../schemas/expressive-code";
 import { FaviconSchema } from "../schemas/favicon";
 import { HeadSchema } from "../schemas/head";
 import { LogoSchema } from "../schemas/logo";
@@ -18,6 +19,7 @@ export const OptionsSchema = z.strictObject({
   logo: LogoSchema(),
   ogImage: OgImageSchema(),
   head: HeadSchema(),
+  expressiveCode: ExpressiveCodeSchema(),
   credits: z.boolean().default(true),
   components: ComponentConfigSchema(),
   search: z.boolean().default(true),

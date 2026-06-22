@@ -12,6 +12,7 @@ import { remarkNooniwa } from "./plugins/remark/index";
 import { rehypeExternalLinks } from "./plugins/rehype/external-links";
 import { rehypeInternalLinks } from "./plugins/rehype/internal-links";
 import { OptionsSchema, type NooniwaUserConfig } from "./utils/user-config";
+import { nooniwaExpressiveCode } from "./integrations/expressive-code";
 
 export default function nooniwa(options: NooniwaUserConfig): AstroIntegration {
   const result = OptionsSchema.safeParse(options);
@@ -113,6 +114,15 @@ export default function nooniwa(options: NooniwaUserConfig): AstroIntegration {
         ) {
           updateConfig({
             integrations: [sitemap({ lastmod: new Date() })],
+          });
+        }
+
+        if (
+          parsed.expressiveCode !== false &&
+          !config.integrations.find((i) => i.name === "astro-expressive-code")
+        ) {
+          updateConfig({
+            integrations: [nooniwaExpressiveCode(parsed.expressiveCode)],
           });
         }
       },
