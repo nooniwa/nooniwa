@@ -6,6 +6,7 @@ import { FaviconSchema } from "../schemas/favicon";
 import { HeadSchema } from "../schemas/head";
 import { LogoSchema } from "../schemas/logo";
 import { MathSchema } from "../schemas/math";
+import { MermaidSchema } from "../schemas/mermaid";
 import { OgImageSchema } from "../schemas/og-image";
 import { SocialSchema } from "../schemas/social";
 
@@ -22,6 +23,7 @@ export const OptionsSchema = z.strictObject({
   head: HeadSchema(),
   expressiveCode: ExpressiveCodeSchema(),
   math: MathSchema(),
+  mermaid: MermaidSchema(),
   credits: z.boolean().default(true),
   components: ComponentConfigSchema(),
   search: z.boolean().default(true),

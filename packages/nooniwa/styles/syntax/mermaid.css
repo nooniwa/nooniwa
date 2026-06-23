@@ -1,0 +1,22 @@
+.mermaid-figure {
+  display: block;
+  text-align: center;
+}
+
+.mermaid-figure img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+}
+
+.mermaid-figure .mermaid-dark {
+  display: none;
+}
+
+.dark .mermaid-figure .mermaid-light {
+  display: none;
+}
+
+.dark .mermaid-figure .mermaid-dark {
+  display: inline-block;
+}

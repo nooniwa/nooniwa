@@ -1,5 +1,6 @@
 /// <reference path="./virtual.d.ts" />
 
+import { createRequire } from "node:module";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { AstroIntegration } from "astro";
@@ -14,6 +15,7 @@ import { rehypeInternalLinks } from "./plugins/rehype/internal-links";
 import { OptionsSchema, type NooniwaUserConfig } from "./utils/user-config";
 import { nooniwaExpressiveCode } from "./integrations/expressive-code";
 import { nooniwaMath } from "./plugins/math";
+import { nooniwaMermaid } from "./plugins/mermaid";
 
 export default function nooniwa(options: NooniwaUserConfig): AstroIntegration {
   const result = OptionsSchema.safeParse(options);
@@ -49,6 +51,19 @@ export default function nooniwa(options: NooniwaUserConfig): AstroIntegration {
 
         const math = parsed.math !== false ? nooniwaMath(parsed.math) : null;
 
+        if (parsed.mermaid !== false) {
+          try {
+            createRequire(import.meta.url).resolve("playwright");
+          } catch {
+            throw new AstroError(
+              "Mermaid is enabled but `playwright` is not installed.",
+              "Install `playwright` to render Mermaid diagrams, or set `mermaid: false` to disable Mermaid.",
+            );
+          }
+        }
+        const mermaid =
+          parsed.mermaid !== false ? nooniwaMermaid(parsed.mermaid) : null;
+
         updateConfig({
           markdown: {
             remarkRehype: { footnoteBackContent: "↩︎" },
@@ -62,6 +77,7 @@ export default function nooniwa(options: NooniwaUserConfig): AstroIntegration {
             ],
             rehypePlugins: [
               ...(math?.rehypePlugins ?? []),
+              ...(mermaid?.rehypePlugins ?? []),
               rehypeExternalLinks,
               rehypeInternalLinks,
             ],

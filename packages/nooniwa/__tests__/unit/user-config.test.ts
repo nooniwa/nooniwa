@@ -181,6 +181,29 @@ describe("OptionsSchema (math)", () => {
   });
 });
 
+describe("OptionsSchema (mermaid)", () => {
+  test("defaults to false (off — needs playwright)", () => {
+    const result = OptionsSchema.safeParse(minimal);
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.mermaid).toBe(false);
+  });
+
+  test("normalizes true to {}", () => {
+    expect(
+      OptionsSchema.safeParse({ ...minimal, mermaid: true }).data?.mermaid,
+    ).toEqual({});
+  });
+
+  test("passes through options ({ mermaidConfig })", () => {
+    const result = OptionsSchema.safeParse({
+      ...minimal,
+      mermaid: { mermaidConfig: { theme: "forest" } },
+    });
+    expect(result.success).toBe(true);
+  });
+});
+
 describe("OptionsSchema (social)", () => {
   test("rejects when a social icon is not a registered name", () => {
     const result = OptionsSchema.safeParse({
