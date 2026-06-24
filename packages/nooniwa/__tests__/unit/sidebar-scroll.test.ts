@@ -4,6 +4,7 @@ import {
   serializeSidebarScroll,
   parseSidebarScroll,
   shouldGateSidebar,
+  SIDEBAR_SCROLL_KEY,
 } from "../../scripts/sidebar-scroll";
 
 describe("serializeSidebarScroll", () => {
@@ -53,5 +54,17 @@ describe("shouldGateSidebar", () => {
 
   test("does not gate when 0 is stored", () => {
     expect(shouldGateSidebar("0")).toBe(false);
+  });
+});
+
+describe("round-trip", () => {
+  test("parsing a serialized value yields the rounded scrollTop", () => {
+    expect(parseSidebarScroll(serializeSidebarScroll(248.6))).toBe(249);
+  });
+});
+
+describe("SIDEBAR_SCROLL_KEY", () => {
+  test("follows the shared nooniwa storage namespace", () => {
+    expect(SIDEBAR_SCROLL_KEY).toBe("nooniwa:sidebar-scroll");
   });
 });
