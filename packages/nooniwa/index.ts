@@ -37,7 +37,7 @@ export default function nooniwa(options: NooniwaUserConfig): AstroIntegration {
       "astro:config:setup": ({ injectRoute, updateConfig, config, logger }) => {
         if (!config.site && (parsed.rss || parsed.sitemap || parsed.robots)) {
           logger.warn(
-            "`site` is not set in astro.config. RSS, sitemap and robots.txt will be skipped. Set `site` to enable them.",
+            "`site` is not set in astro.config.mjs. RSS, sitemap, robots.txt, canonical, og:url and og:image will be skipped. Set `site` to enable them.",
           );
         }
 
