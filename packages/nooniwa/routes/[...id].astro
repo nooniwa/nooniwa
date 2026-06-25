@@ -2,23 +2,18 @@
 import { getCollection, render } from "astro:content";
 import config from "virtual:nooniwa/config";
 import Page from "virtual:nooniwa/components/Page";
-import { buildPageUrlMapFromEntries } from "../utils/resolution-map";
-import { buildPageLinks } from "../utils/page-links";
 import { buildBacklinksMap, getBacklinksForPage } from "../utils/backlinks";
 import { buildFolderTree } from "../utils/folder-tree";
-import { buildGraphData, getLocalGraph } from "../utils/graph";
+import { getLocalGraph } from "../utils/graph";
+import { getSiteData } from "../utils/site-data";
 import { isListablePage } from "../utils/pages";
 import { slugToUrl } from "../utils/slug";
 
 export async function getStaticPaths() {
-  const allPages = await getCollection("pages");
-  const pages = allPages.filter(isListablePage);
-
-  const { pageUrlMap, publishedSlugs } = buildPageUrlMapFromEntries(allPages);
-  const pageLinks = buildPageLinks(pages, pageUrlMap, publishedSlugs);
+  const pages = await getCollection("pages", isListablePage);
+  const { pageLinks, fullGraphData } = await getSiteData();
   const backlinksMap = buildBacklinksMap(pageLinks);
   const folderTree = buildFolderTree(pages);
-  const fullGraphData = buildGraphData(pageLinks);
   const hasFullGraph = fullGraphData.nodes.length > 0;
 
   return pages.map((page) => {

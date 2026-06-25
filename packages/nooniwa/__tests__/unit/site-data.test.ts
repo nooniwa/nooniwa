@@ -28,6 +28,7 @@ describe("buildSiteData (single source for aggregation)", () => {
 
     const { pageUrlMap, publishedSlugs } = buildPageUrlMapFromEntries(allPages);
     const pageLinks = buildPageLinks(pages, pageUrlMap, publishedSlugs);
+    expect(result.pageLinks).toEqual(pageLinks);
     expect(result.fullGraphData).toEqual(buildGraphData(pageLinks));
     expect(result.tagData).toEqual(buildTagData(pages));
   });
