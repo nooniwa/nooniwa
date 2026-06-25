@@ -66,3 +66,20 @@ const {
     }
   }
 </style>
+
+<script>
+  import {
+    attachScrollGuard,
+    shouldBlockDrawerScroll,
+  } from "../scripts/wheel-guard";
+
+  function initRightDrawerGuard() {
+    const aside = document.querySelector<HTMLElement>(".page-right");
+    if (!aside) return;
+    attachScrollGuard(aside, (deltaY) =>
+      shouldBlockDrawerScroll(window.innerWidth < 1024, deltaY, aside),
+    );
+  }
+
+  initRightDrawerGuard();
+</script>
