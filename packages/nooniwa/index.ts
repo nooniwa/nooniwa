@@ -9,6 +9,7 @@ import sitemap from "@astrojs/sitemap";
 import * as pagefind from "pagefind";
 import { vitePluginUserConfig } from "./integrations/vite-plugins";
 import { buildContentMaps } from "./utils/content-scanner";
+import { inlineEmbeds } from "./utils/embed-inline";
 import { remarkNooniwa } from "./plugins/remark/index";
 import { rehypeExternalLinks } from "./plugins/rehype/external-links";
 import { rehypeInternalLinks } from "./plugins/rehype/internal-links";
@@ -152,6 +153,12 @@ export default function nooniwa(options: NooniwaUserConfig): AstroIntegration {
         }
       },
       "astro:build:done": async ({ dir, logger: astroLogger }) => {
+        const embedLogger = astroLogger.fork("nooniwa/embed");
+        const embedResult = inlineEmbeds(fileURLToPath(dir));
+        embedLogger.info(
+          `Inlined ${embedResult.embedsFilled} embed(s) across ${embedResult.filesModified} page(s)`,
+        );
+
         const logger = astroLogger.fork("nooniwa/pagefind");
 
         if (!parsed.search) {

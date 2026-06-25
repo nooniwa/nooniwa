@@ -26,6 +26,7 @@
     "d3-zoom": "^3.0.0",
     "github-slugger": "^2.0.0",
     "katex": "^0.17.0",
+    "node-html-parser": "^8.0.3",
     "pagefind": "^1.5.2",
     "rehype-katex": "^7.0.1",
     "rehype-mermaid": "^3.0.0",
