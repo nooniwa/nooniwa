@@ -1,5 +1,6 @@
-import type { AstroIntegrationLogger } from "astro";
+import type { Node } from "unist";
 import type { ResolutionMap } from "../../utils/resolution-map";
+import type { Reporter } from "./reporter";
 import { resolveWikilink } from "./resolve";
 import { slugToUrl, headingToAnchor } from "../../utils/slug";
 import { escapeHtml } from "./utils";
@@ -24,9 +25,10 @@ export function processEmbed(
   target: string,
   anchor: string | undefined,
   pageUrlMap: ResolutionMap,
-  currentSlugPath?: string,
+  currentSlugPath: string | undefined,
+  reporter: Reporter,
+  node?: Node,
   publishedSlugs?: ReadonlySet<string>,
-  logger?: AstroIntegrationLogger,
 ): string {
   const embedError = (message: string): string =>
     `<div class="embed-error">${escapeHtml(message)}</div>`;
@@ -39,7 +41,7 @@ export function processEmbed(
   );
 
   if (!resolvedSlug) {
-    logger?.info(`Embed target not found: ${target}`);
+    reporter.info(`Embed target not found: ${target}`, node);
     return embedError(`Embed not found: ${target}`);
   }
 

@@ -8,9 +8,11 @@ import type {
   Paragraph,
   PhrasingContent,
 } from "mdast";
+import type { Node } from "unist";
 import type { VFile } from "vfile";
 import type { AstroIntegrationLogger } from "astro";
 import type { ResolutionMap } from "../../utils/resolution-map";
+import { createReporter, type Reporter } from "./reporter";
 import { resolveWikilink, resolveImage } from "./resolve";
 import { WIKILINK_REGEX } from "./wikilink";
 import { isImageFile, computeRelativeImagePath } from "./image";
@@ -38,11 +40,12 @@ export interface RemarkNooniwaOptions {
 function processTextNode(
   text: string,
   pageUrlMap: ResolutionMap,
+  reporter: Reporter,
+  node: Node,
   currentSlugPath?: string,
   imageFileMap?: ResolutionMap,
   mdContentRelPath?: string,
   publishedSlugs?: ReadonlySet<string>,
-  logger?: AstroIntegrationLogger,
 ): PhrasingContent[] {
   const nodes: PhrasingContent[] = [];
   let lastIndex = 0;
@@ -79,7 +82,7 @@ function processTextNode(
           type: "html",
           value: `<div class="embed-error">Image not found: ${target}</div>`,
         });
-        logger?.info(`Image not found: ${target}`);
+        reporter.info(`Image not found: ${target}`, node);
         continue;
       }
 
@@ -121,8 +124,9 @@ function processTextNode(
         anchor,
         pageUrlMap,
         currentSlugPath,
+        reporter,
+        node,
         publishedSlugs,
-        logger,
       );
       nodes.push({ type: "html", value: embedHtml });
       continue;
@@ -172,7 +176,7 @@ function processTextNode(
         type: "html",
         value: `<span class="internal-link-unresolved" title="Page not found: ${escapeHtml(target)}">${escapeHtml(displayText)}</span>`,
       });
-      logger?.info(`Broken wikilink: [[${target}]]`);
+      reporter.info(`Broken wikilink: [[${target}]]`, node);
     }
   }
 
@@ -237,6 +241,7 @@ export function remarkNooniwa(options: RemarkNooniwaOptions) {
   return (tree: Root, file: VFile) => {
     const currentSlugPath = getSlugPath(file.path);
     const mdContentRelPath = getContentRelativePath(file.path);
+    const reporter = createReporter(logger, file);
 
     removeCommentsAcrossNodes(tree);
 
@@ -264,11 +269,12 @@ export function remarkNooniwa(options: RemarkNooniwaOptions) {
         const newNodes = processTextNode(
           node.value,
           pageUrlMap,
+          reporter,
+          node,
           currentSlugPath,
           imageFileMap,
           mdContentRelPath,
           publishedSlugs,
-          logger,
         );
         parent.children.splice(index, 1, ...newNodes);
 
