@@ -1,6 +1,6 @@
 {
   "name": "nooniwa",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "nooniwa is an Astro theme (Astro integration) for digital gardens. Your Markdown notes become a website.",
   "keywords": [
     "astro",
@@ -57,7 +57,7 @@
     "vitest": "^4.1.9"
   },
   "peerDependencies": {
-    "astro": "^6.0.0",
+    "astro": "^6.0.0 || ^7.0.0",
     "playwright": "^1.60.0"
   },
   "peerDependenciesMeta": {
