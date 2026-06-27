@@ -1,10 +1,16 @@
 {
   "name": "nooniwa",
-  "version": "0.0.1",
-  "description": "",
-  "keywords": [],
-  "license": "",
-  "author": "",
+  "version": "0.1.0",
+  "description": "nooniwa is an Astro theme (Astro integration) for digital gardens. Your Markdown notes become a website.",
+  "keywords": [
+    "astro",
+    "withastro",
+    "astro-integration",
+    "digital-garden"
+  ],
+  "homepage": "https://nooniwa.dev",
+  "license": "MIT",
+  "author": "Ryota Hagihara",
   "exports": {
     ".": "./index.ts",
     "./schema": "./schema.ts",
@@ -12,6 +18,10 @@
     "./routes/*": "./routes/*"
   },
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nooniwa/nooniwa.git"
+  },
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest"
